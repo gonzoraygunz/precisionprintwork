@@ -3,25 +3,25 @@ import Link from "next/link";
 
 const projects = [
   {
-    src: "/portfolio/tray-green.png",
+    src: "/Portfolio/tray-green.png",
     alt: "Perforated storage tray — green PLA",
     title: "Perforated Storage Tray",
     description: "Custom grid tray printed in green PLA. Available in any color.",
   },
   {
-    src: "/portfolio/tray-black.png",
+    src: "/Portfolio/tray-black.png",
     alt: "Perforated storage tray — black PLA",
     title: "Perforated Storage Tray",
     description: "Same design in black PETG for a more industrial look.",
   },
   {
-    src: "/portfolio/tray-white.png",
+    src: "/Portfolio/tray-white.png",
     alt: "Perforated storage tray — white PLA",
     title: "Perforated Storage Tray",
     description: "White PLA version — clean finish for lab or workshop use.",
   },
   {
-    src: "/portfolio/pipe-clamps.png",
+    src: "/Portfolio/pipe-clamps.png",
     alt: "Custom pipe clamp brackets",
     title: "Pipe Clamp Brackets",
     description: "Functional mounting brackets designed to fit a specific pipe diameter.",
