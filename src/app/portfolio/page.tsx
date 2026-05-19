@@ -5,25 +5,25 @@ const projects = [
   {
     src: "/Portfolio/tray-green.png",
     alt: "Perforated storage tray — green PLA",
-    title: "Perforated Storage Tray",
+    title: "Custom 510 Cartridge Tray // ABS",
     description: "Custom grid tray printed in green PLA. Available in any color.",
   },
   {
     src: "/Portfolio/tray-black.png",
     alt: "Perforated storage tray — black PLA",
-    title: "Perforated Storage Tray",
+    title: "Custom 510 Cartridge Tray // ABS",
     description: "Same design in black PETG for a more industrial look.",
   },
   {
     src: "/Portfolio/tray-white.png",
     alt: "Perforated storage tray — white PLA",
-    title: "Perforated Storage Tray",
+    title: "Custom 510 Cartridge Tray // ABS",
     description: "White PLA version — clean finish for lab or workshop use.",
   },
   {
     src: "/Portfolio/pipe-clamps.png",
-    alt: "Custom pipe clamp brackets",
-    title: "Pipe Clamp Brackets",
+    alt: "Machine vision alignment LED holder",
+    title: "Machine Vision Alignment LED Holder",
     description: "Functional mounting brackets designed to fit a specific pipe diameter.",
   },
 ];
