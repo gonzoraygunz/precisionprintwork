@@ -1,6 +1,32 @@
+import Image from "next/image";
 import Link from "next/link";
 
-const placeholders = Array.from({ length: 6 }, (_, i) => i + 1);
+const projects = [
+  {
+    src: "/portfolio/tray-green.png",
+    alt: "Perforated storage tray — green PLA",
+    title: "Perforated Storage Tray",
+    description: "Custom grid tray printed in green PLA. Available in any color.",
+  },
+  {
+    src: "/portfolio/tray-black.png",
+    alt: "Perforated storage tray — black PLA",
+    title: "Perforated Storage Tray",
+    description: "Same design in black PETG for a more industrial look.",
+  },
+  {
+    src: "/portfolio/tray-white.png",
+    alt: "Perforated storage tray — white PLA",
+    title: "Perforated Storage Tray",
+    description: "White PLA version — clean finish for lab or workshop use.",
+  },
+  {
+    src: "/portfolio/pipe-clamps.png",
+    alt: "Custom pipe clamp brackets",
+    title: "Pipe Clamp Brackets",
+    description: "Functional mounting brackets designed to fit a specific pipe diameter.",
+  },
+];
 
 export default function Portfolio() {
   return (
@@ -13,14 +39,21 @@ export default function Portfolio() {
         </p>
       </div>
 
-      {/* Replace these placeholder cards with real photos */}
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-        {placeholders.map((i) => (
-          <div
-            key={i}
-            className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-dashed border-slate-300"
-          >
-            Add photo {i}
+        {projects.map((project) => (
+          <div key={project.src} className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+            <div className="aspect-square relative bg-slate-50">
+              <Image
+                src={project.src}
+                alt={project.alt}
+                fill
+                className="object-contain p-4"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="font-semibold text-slate-900 text-sm">{project.title}</h3>
+              <p className="text-slate-500 text-xs mt-1">{project.description}</p>
+            </div>
           </div>
         ))}
       </div>
