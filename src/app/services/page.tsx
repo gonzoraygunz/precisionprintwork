@@ -34,7 +34,7 @@ export default function Services() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-20">
       <div className="text-center mb-16">
-        <p className="text-orange-500 text-sm font-semibold uppercase tracking-widest mb-3">What I Offer</p>
+        <p className="text-green-600 text-sm font-semibold uppercase tracking-widest mb-3">What I Offer</p>
         <h1 className="text-4xl font-bold text-slate-900">Services</h1>
         <p className="mt-4 text-slate-500 max-w-xl mx-auto">
           Every job is custom. If you can describe it, there&apos;s a good chance I can print it.
@@ -49,7 +49,7 @@ export default function Services() {
             <ul className="space-y-1">
               {s.examples.map((e) => (
                 <li key={e} className="text-sm text-slate-600 flex items-start gap-2">
-                  <span className="text-orange-400 mt-0.5">•</span>
+                  <span className="text-green-500 mt-0.5">•</span>
                   {e}
                 </li>
               ))}
@@ -80,7 +80,7 @@ export default function Services() {
         <p className="text-slate-400 mb-6">Quotes are free. Describe your part and I&apos;ll get back to you within a day.</p>
         <Link
           href="/order"
-          className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors inline-block"
+          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
         >
           Request a Quote
         </Link>

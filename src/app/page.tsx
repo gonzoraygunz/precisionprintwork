@@ -31,12 +31,12 @@ export default function Home() {
       {/* Hero */}
       <section className="bg-slate-900 text-white py-24 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-4">
+          <p className="text-green-500 text-sm font-semibold uppercase tracking-widest mb-4">
             Custom 3D Printing
           </p>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Parts Built to Solve{" "}
-            <span className="text-orange-400">Your Problem</span>
+            <span className="text-green-500">Your Problem</span>
           </h1>
           <p className="mt-6 text-slate-300 text-lg max-w-xl mx-auto">
             I design and 3D print custom parts and solutions — from one-off prototypes to functional
@@ -45,7 +45,7 @@ export default function Home() {
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/order"
-              className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
               Request a Quote
             </Link>
@@ -82,7 +82,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
             {steps.map((s) => (
               <div key={s.n} className="text-center">
-                <div className="text-3xl font-bold text-orange-400 mb-2">{s.n}</div>
+                <div className="text-3xl font-bold text-green-500 mb-2">{s.n}</div>
                 <h3 className="font-semibold text-slate-800 mb-1">{s.title}</h3>
                 <p className="text-slate-500 text-sm">{s.body}</p>
               </div>
@@ -91,7 +91,7 @@ export default function Home() {
           <div className="text-center mt-10">
             <Link
               href="/how-it-works"
-              className="text-orange-500 font-semibold hover:text-orange-600 transition-colors"
+              className="text-green-600 font-semibold hover:text-green-700 transition-colors"
             >
               See the full process →
             </Link>
@@ -100,15 +100,15 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-orange-500 text-white">
+      <section className="py-20 px-4 bg-blue-700 text-white">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Have a part in mind?</h2>
-          <p className="text-orange-100 mb-8">
+          <p className="text-blue-100 mb-8">
             Describe it, sketch it, or send a file. Quotes are free and usually back within a day.
           </p>
           <Link
             href="/order"
-            className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-colors inline-block"
+            className="bg-white text-blue-700 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-block"
           >
             Start a Request
           </Link>

@@ -50,7 +50,7 @@ export default function HowItWorks() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-20">
       <div className="text-center mb-16">
-        <p className="text-orange-500 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
+        <p className="text-green-600 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
         <h1 className="text-4xl font-bold text-slate-900">How It Works</h1>
         <p className="mt-4 text-slate-500 max-w-xl mx-auto">
           Simple four-step process — from problem to printed part.
@@ -61,11 +61,11 @@ export default function HowItWorks() {
       <div className="space-y-12 mb-20">
         {steps.map((s) => (
           <div key={s.n} className="flex gap-8 items-start">
-            <div className="text-4xl font-bold text-orange-400 w-16 shrink-0 pt-1">{s.n}</div>
+            <div className="text-4xl font-bold text-green-500 w-16 shrink-0 pt-1">{s.n}</div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 mb-2">{s.title}</h2>
               <p className="text-slate-500 leading-relaxed mb-3">{s.body}</p>
-              <p className="text-sm text-orange-600 bg-orange-50 border border-orange-100 rounded-lg px-4 py-2 inline-block">
+              <p className="text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-4 py-2 inline-block">
                 💡 {s.tip}
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function HowItWorks() {
         <p className="text-slate-400 mb-6">Takes about 2 minutes. Quotes are free.</p>
         <Link
           href="/order"
-          className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors inline-block"
+          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
         >
           Request a Quote
         </Link>

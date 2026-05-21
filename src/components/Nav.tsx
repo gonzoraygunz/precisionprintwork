@@ -20,7 +20,7 @@ export default function Nav() {
     <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="font-bold text-lg tracking-tight text-slate-900">
-          Precision<span className="text-orange-500">Print</span>Work
+          Precision<span className="text-green-600">Print</span>Work
         </Link>
 
         {/* Desktop nav */}
@@ -31,7 +31,7 @@ export default function Nav() {
               href={l.href}
               className={
                 pathname === l.href
-                  ? "text-orange-500"
+                  ? "text-green-600"
                   : "text-slate-600 hover:text-slate-900 transition-colors"
               }
             >
@@ -40,7 +40,7 @@ export default function Nav() {
           ))}
           <Link
             href="/order"
-            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Get a Quote
           </Link>
@@ -72,7 +72,7 @@ export default function Nav() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className={pathname === l.href ? "text-orange-500" : "text-slate-600"}
+              className={pathname === l.href ? "text-green-600" : "text-slate-600"}
             >
               {l.label}
             </Link>
@@ -80,7 +80,7 @@ export default function Nav() {
           <Link
             href="/order"
             onClick={() => setOpen(false)}
-            className="bg-orange-500 text-white px-4 py-2 rounded-lg text-center hover:bg-orange-600 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition-colors"
           >
             Get a Quote
           </Link>

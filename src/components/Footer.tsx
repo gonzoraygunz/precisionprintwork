@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between gap-8">
         <div>
           <p className="text-white font-bold text-lg tracking-tight">
-            Precision<span className="text-orange-500">Print</span>Work
+            Precision<span className="text-green-600">Print</span>Work
           </p>
           <p className="mt-2 text-sm max-w-xs">
             Custom 3D printed parts and solutions — designed and printed to spec.

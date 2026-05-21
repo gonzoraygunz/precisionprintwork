@@ -59,7 +59,7 @@ export default function OrderForm() {
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="mt-6 text-orange-500 hover:underline text-sm font-medium"
+          className="mt-6 text-green-600 hover:underline text-sm font-medium"
         >
           Submit another request
         </button>
@@ -77,7 +77,7 @@ export default function OrderForm() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
             <input
               {...register("name")}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Your name"
             />
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
@@ -87,7 +87,7 @@ export default function OrderForm() {
             <input
               {...register("email")}
               type="email"
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@example.com"
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -98,7 +98,7 @@ export default function OrderForm() {
           <input
             {...register("phone")}
             type="tel"
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="(555) 000-0000"
           />
         </div>
@@ -114,7 +114,7 @@ export default function OrderForm() {
           <textarea
             {...register("description")}
             rows={5}
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
           />
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
@@ -127,7 +127,7 @@ export default function OrderForm() {
               {...register("quantity")}
               type="number"
               min="1"
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="1"
             />
             {errors.quantity && <p className="text-red-500 text-xs mt-1">{errors.quantity.message}</p>}
@@ -136,7 +136,7 @@ export default function OrderForm() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Material preference</label>
             <select
               {...register("material")}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
+              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
               <option value="">No preference — suggest one</option>
               <option value="PLA">PLA (rigid, general purpose)</option>
@@ -151,7 +151,7 @@ export default function OrderForm() {
           <label className="block text-sm font-medium text-slate-700 mb-1">Timeline</label>
           <select
             {...register("timeline")}
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
+            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           >
             <option value="">No rush — whenever works</option>
             <option value="1-2 weeks">1–2 weeks</option>
@@ -177,7 +177,7 @@ export default function OrderForm() {
                 <span className="text-green-600 font-medium">📎 {file.name}</span>
               ) : (
                 <>
-                  <span className="text-orange-500 font-medium">Click to upload</span> or drag and drop
+                  <span className="text-green-600 font-medium">Click to upload</span> or drag and drop
                   <br />
                   <span className="text-xs text-slate-400">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
                 </>
@@ -196,7 +196,7 @@ export default function OrderForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-60"
+        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
       >
         {status === "submitting" ? "Sending…" : "Submit Request"}
       </button>
