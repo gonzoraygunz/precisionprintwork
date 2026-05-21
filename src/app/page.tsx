@@ -55,9 +55,9 @@ export default function Home() {
           <p className="text-green-400 text-sm font-semibold uppercase tracking-widest mb-4">
             FDM · Resin · Custom
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            If You Can Dream It,{" "}
-            <span className="text-green-400">I Can Print It</span>
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+            Practical Parts and Solutions, Tabletop Minis, Terrain,{" "}
+            <span className="text-green-400">Gifts and Custom Requests</span>
           </h1>
           <p className="mt-6 text-slate-300 text-lg max-w-xl mx-auto">
             Custom 3D printing for functional parts, D&D minis, gifts, terrain, prototypes, and
