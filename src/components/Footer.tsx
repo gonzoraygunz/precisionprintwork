@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-slate-900 text-slate-400">
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between gap-8">
         <div>
-          <Image src="/logo.png" alt="Precision Printworks" width={160} height={60} className="h-12 w-auto mb-2" />
+          <Image src="/logo.png" alt="Precision Printworks" width={1408} height={768} className="h-12 w-auto mb-2" />
           <p className="mt-2 text-sm max-w-xs">
             Custom 3D printing — parts, minis, terrain, gifts, and more.
           </p>

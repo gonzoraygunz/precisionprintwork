@@ -21,7 +21,7 @@ export default function Nav() {
     <header className="border-b border-slate-700 bg-slate-900 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="Precision Printworks" width={200} height={75} className="h-12 w-auto" priority />
+          <Image src="/logo.png" alt="Precision Printworks" width={1408} height={768} className="h-16 w-auto" priority />
         </Link>
 
         {/* Desktop nav */}
