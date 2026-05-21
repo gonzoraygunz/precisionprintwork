@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between gap-8">
         <div>
           <p className="text-white font-bold text-lg tracking-tight">
-            Precision<span className="text-green-600">Print</span>Work
+            Precision <span className="text-green-600">Printworks</span>
           </p>
           <p className="mt-2 text-sm max-w-xs">
-            Custom 3D printed parts and solutions — designed and printed to spec.
+            Custom 3D printing — parts, minis, terrain, gifts, and more.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-slate-800 text-center text-xs py-4 text-slate-600">
-        © {new Date().getFullYear()} PrecisionPrintWork. All rights reserved.
+        © {new Date().getFullYear()} Precision Printworks. All rights reserved.
       </div>
     </footer>
   );

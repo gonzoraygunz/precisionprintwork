@@ -8,9 +8,9 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PrecisionPrintWork — Custom 3D Printed Parts",
+  title: "Precision Printworks — Custom 3D Printing",
   description:
-    "Custom 3D printed parts and solutions designed and printed to spec. Submit your project and get a quote.",
+    "Custom 3D printing for functional parts, D&D minis, terrain, gifts, prototypes, and more. FDM and resin. Fast turnaround.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

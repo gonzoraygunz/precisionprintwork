@@ -20,7 +20,7 @@ export default function Nav() {
     <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="font-bold text-lg tracking-tight text-slate-900">
-          Precision<span className="text-green-600">Print</span>Work
+          Precision <span className="text-green-600">Printworks</span>
         </Link>
 
         {/* Desktop nav */}
