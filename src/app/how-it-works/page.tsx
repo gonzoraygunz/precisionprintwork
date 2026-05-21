@@ -48,54 +48,56 @@ const faqs = [
 
 export default function HowItWorks() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-20">
-      <div className="text-center mb-16">
-        <p className="text-green-600 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
-        <h1 className="text-4xl font-bold text-slate-900">How It Works</h1>
-        <p className="mt-4 text-slate-500 max-w-xl mx-auto">
-          Simple four-step process — from problem to printed part.
-        </p>
-      </div>
+    <div className="bg-slate-900 min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
+          <h1 className="text-4xl font-bold text-white">How It Works</h1>
+          <p className="mt-4 text-slate-400 max-w-xl mx-auto">
+            Simple four-step process — from problem to printed part.
+          </p>
+        </div>
 
-      {/* Steps */}
-      <div className="space-y-12 mb-20">
-        {steps.map((s) => (
-          <div key={s.n} className="flex gap-8 items-start">
-            <div className="text-4xl font-bold text-green-500 w-16 shrink-0 pt-1">{s.n}</div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 mb-2">{s.title}</h2>
-              <p className="text-slate-500 leading-relaxed mb-3">{s.body}</p>
-              <p className="text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-4 py-2 inline-block">
-                💡 {s.tip}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* FAQ */}
-      <div className="mb-20">
-        <h2 className="text-2xl font-bold text-slate-900 mb-8">Common Questions</h2>
-        <div className="space-y-6">
-          {faqs.map((f) => (
-            <div key={f.q} className="border-b border-slate-100 pb-6">
-              <h3 className="font-semibold text-slate-900 mb-2">{f.q}</h3>
-              <p className="text-slate-500 text-sm">{f.a}</p>
+        {/* Steps */}
+        <div className="space-y-12 mb-20">
+          {steps.map((s) => (
+            <div key={s.n} className="flex gap-8 items-start">
+              <div className="text-4xl font-bold text-amber-400 w-16 shrink-0 pt-1">{s.n}</div>
+              <div>
+                <h2 className="text-xl font-bold text-white mb-2">{s.title}</h2>
+                <p className="text-slate-400 leading-relaxed mb-3">{s.body}</p>
+                <p className="text-sm text-cyan-300 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 inline-block">
+                  💡 {s.tip}
+                </p>
+              </div>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* CTA */}
-      <div className="bg-slate-900 text-white rounded-2xl p-10 text-center">
-        <h2 className="text-2xl font-bold mb-3">Ready to submit a request?</h2>
-        <p className="text-slate-400 mb-6">Takes about 2 minutes. Quotes are free.</p>
-        <Link
-          href="/order"
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
-        >
-          Request a Quote
-        </Link>
+        {/* FAQ */}
+        <div className="mb-20">
+          <h2 className="text-2xl font-bold text-white mb-8">Common Questions</h2>
+          <div className="space-y-6">
+            {faqs.map((f) => (
+              <div key={f.q} className="border-b border-slate-700 pb-6">
+                <h3 className="font-semibold text-white mb-2">{f.q}</h3>
+                <p className="text-slate-400 text-sm">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="circuit-bg bg-slate-800 border border-slate-700 text-white rounded-2xl p-10 text-center">
+          <h2 className="text-2xl font-bold mb-3">Ready to submit a request?</h2>
+          <p className="text-slate-400 mb-6">Takes about 2 minutes. Quotes are free.</p>
+          <Link
+            href="/order"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
+          >
+            Request a Quote
+          </Link>
+        </div>
       </div>
     </div>
   );

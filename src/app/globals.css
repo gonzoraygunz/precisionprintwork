@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 }
 
 @theme inline {
@@ -12,15 +12,16 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Subtle repeating circuit-board grid — inspired by the logo's cube face texture.
+   L-shaped traces + node dots at intersections, cyan at ~5-10% opacity. */
+@utility circuit-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cline x1='60' y1='0' x2='60' y2='60' stroke='rgba(34%2C211%2C238%2C0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='60' x2='60' y2='60' stroke='rgba(34%2C211%2C238%2C0.06)' stroke-width='0.5'/%3E%3Cline x1='30' y1='0' x2='30' y2='30' stroke='rgba(34%2C211%2C238%2C0.04)' stroke-width='0.5'/%3E%3Cline x1='30' y1='30' x2='60' y2='30' stroke='rgba(34%2C211%2C238%2C0.04)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(34%2C211%2C238%2C0.12)'/%3E%3Ccircle cx='60' cy='60' r='1' fill='rgba(34%2C211%2C238%2C0.08)'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  background-repeat: repeat;
 }

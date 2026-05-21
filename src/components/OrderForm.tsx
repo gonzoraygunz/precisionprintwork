@@ -17,6 +17,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+const inputClass =
+  "w-full border border-slate-600 bg-slate-700 text-white placeholder:text-slate-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500";
+
 export default function OrderForm() {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -51,15 +54,15 @@ export default function OrderForm() {
 
   if (status === "success") {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center">
+      <div className="circuit-bg bg-slate-800 border border-cyan-700 rounded-2xl p-10 text-center">
         <div className="text-4xl mb-4">✅</div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">Request received!</h2>
-        <p className="text-slate-500">
+        <h2 className="text-xl font-bold text-white mb-2">Request received!</h2>
+        <p className="text-slate-400">
           I&apos;ll review your request and send a quote to your email within 1–2 business days.
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="mt-6 text-green-600 hover:underline text-sm font-medium"
+          className="mt-6 text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
         >
           Submit another request
         </button>
@@ -71,73 +74,50 @@ export default function OrderForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Contact */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Your Info</legend>
+        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Your Info</legend>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
-            <input
-              {...register("name")}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your name"
-            />
-            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+            <label className="block text-sm font-medium text-slate-300 mb-1">Name *</label>
+            <input {...register("name")} className={inputClass} placeholder="Your name" />
+            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
-            <input
-              {...register("email")}
-              type="email"
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+            <label className="block text-sm font-medium text-slate-300 mb-1">Email *</label>
+            <input {...register("email")} type="email" className={inputClass} placeholder="you@example.com" />
+            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Phone (optional)</label>
-          <input
-            {...register("phone")}
-            type="tel"
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="(555) 000-0000"
-          />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Phone (optional)</label>
+          <input {...register("phone")} type="tel" className={inputClass} placeholder="(555) 000-0000" />
         </div>
       </fieldset>
 
       {/* Part details */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Part Details</legend>
+        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Part Details</legend>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-slate-300 mb-1">
             Describe your part or project *
           </label>
           <textarea
             {...register("description")}
             rows={5}
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className={inputClass + " resize-none"}
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
           />
-          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+          {errors.description && <p className="text-red-400 text-xs mt-1">{errors.description.message}</p>}
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Quantity *</label>
-            <input
-              {...register("quantity")}
-              type="number"
-              min="1"
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="1"
-            />
-            {errors.quantity && <p className="text-red-500 text-xs mt-1">{errors.quantity.message}</p>}
+            <label className="block text-sm font-medium text-slate-300 mb-1">Quantity *</label>
+            <input {...register("quantity")} type="number" min="1" className={inputClass} placeholder="1" />
+            {errors.quantity && <p className="text-red-400 text-xs mt-1">{errors.quantity.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Material preference</label>
-            <select
-              {...register("material")}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            >
+            <label className="block text-sm font-medium text-slate-300 mb-1">Material preference</label>
+            <select {...register("material")} className={inputClass}>
               <option value="">No preference — suggest one</option>
               <option value="PLA">PLA (rigid, general purpose)</option>
               <option value="PETG">PETG (tough, moisture resistant)</option>
@@ -148,11 +128,8 @@ export default function OrderForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Timeline</label>
-          <select
-            {...register("timeline")}
-            className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
+          <label className="block text-sm font-medium text-slate-300 mb-1">Timeline</label>
+          <select {...register("timeline")} className={inputClass}>
             <option value="">No rush — whenever works</option>
             <option value="1-2 weeks">1–2 weeks</option>
             <option value="asap">As soon as possible</option>
@@ -161,10 +138,10 @@ export default function OrderForm() {
 
         {/* File upload */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-slate-300 mb-1">
             Attach a file (optional)
           </label>
-          <div className="border border-dashed border-slate-300 rounded-lg px-4 py-6 text-center">
+          <div className="border border-dashed border-slate-600 bg-slate-800 rounded-lg px-4 py-6 text-center hover:border-cyan-600 transition-colors">
             <input
               type="file"
               id="file"
@@ -172,14 +149,14 @@ export default function OrderForm() {
               className="hidden"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
-            <label htmlFor="file" className="cursor-pointer text-sm text-slate-500 hover:text-slate-700">
+            <label htmlFor="file" className="cursor-pointer text-sm text-slate-500 hover:text-slate-300 transition-colors">
               {file ? (
-                <span className="text-green-600 font-medium">📎 {file.name}</span>
+                <span className="text-cyan-400 font-medium">📎 {file.name}</span>
               ) : (
                 <>
-                  <span className="text-green-600 font-medium">Click to upload</span> or drag and drop
+                  <span className="text-cyan-400 font-medium">Click to upload</span> or drag and drop
                   <br />
-                  <span className="text-xs text-slate-400">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
+                  <span className="text-xs text-slate-500">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
                 </>
               )}
             </label>
@@ -188,7 +165,7 @@ export default function OrderForm() {
       </fieldset>
 
       {status === "error" && (
-        <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">
+        <p className="text-red-400 text-sm bg-red-950 border border-red-800 rounded-lg px-4 py-3">
           {errorMsg}
         </p>
       )}
@@ -201,7 +178,7 @@ export default function OrderForm() {
         {status === "submitting" ? "Sending…" : "Submit Request"}
       </button>
 
-      <p className="text-center text-xs text-slate-400">
+      <p className="text-center text-xs text-slate-500">
         Quotes are free. I&apos;ll respond within 1–2 business days.
       </p>
     </form>
