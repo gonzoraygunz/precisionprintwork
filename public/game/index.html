@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Layer Up — Precision Print Work</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #07111d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Courier New', Courier, monospace;
+      touch-action: none;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      cursor: pointer;
+      max-width: 100vw;
+      max-height: calc(100svh - 36px);
+    }
+    #brand {
+      margin-top: 8px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    #brand a {
+      color: inherit;
+      text-decoration: none;
+    }
+    #brand a:hover { color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="brand"><a href="/">precision print work</a></div>
+
+  <script>
+  (() => {
+    // ── Canvas setup ────────────────────────────────────────────────────────
+    const canvas = document.getElementById('c');
+    const ctx    = canvas.getContext('2d');
+    const W = 360, H = 580;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+
+    // ── Constants ────────────────────────────────────────────────────────────
+    const LAYER_H       = 22;
+    const BASE_W        = 200;
+    const PERFECT_PX    = 6;   // within this many px = perfect
+    const CAM_TARGET_Y  = H * 0.42; // screen y where top layer rests once scrolling
+    const MAX_SPEED     = 8.5;
+
+    const PALETTE = [
+      '#FF6B6B','#FF8C42','#FFCA3A','#8AC926',
+      '#1982C4','#6A4C93','#00B4D8','#F72585',
+      '#3A86FF','#06D6A0','#FFB703','#E76F51',
+    ];
+
+    // ── Audio ────────────────────────────────────────────────────────────────
+    let audioCtx = null;
+    function ensureAudio() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+    }
+    function tone(freq, dur, type = 'square', vol = 0.08) {
+      try {
+        ensureAudio();
+        if (!audioCtx) return;
+        const osc  = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      } catch (_) {}
+    }
+    function sfxPlace(score) {
+      const f = Math.min(220 + score * 10, 800);
+      tone(f, 0.08, 'square', 0.07);
+    }
+    function sfxPerfect() {
+      tone(880,  0.07, 'sine', 0.09);
+      setTimeout(() => tone(1320, 0.10, 'sine', 0.07), 55);
+    }
+    function sfxFail() {
+      tone(120, 0.28, 'sawtooth', 0.1);
+    }
+
+    // ── State ────────────────────────────────────────────────────────────────
+    let G = {};
+
+    function initMenu() {
+      G = { state: 'menu' };
+    }
+
+    function initPlay() {
+      G = {
+        state:       'play',
+        score:       0,
+        highScore:   getHS(),
+        layers:      [{ x: (W - BASE_W) / 2, w: BASE_W, y: H - LAYER_H, color: '#455A64' }],
+        cur:         null,
+        camOff:      0,
+        targetCam:   0,
+        particles:   [],
+        floats:      [],   // floating "PERFECT!" texts
+        flashAlpha:  0,
+        overCooldown: false,
+      };
+      spawnBlock();
+    }
+
+    function getHS()  { return parseInt(localStorage.getItem('ppw_hs') || '0', 10); }
+    function saveHS(n){ localStorage.setItem('ppw_hs', String(n)); }
+
+    // ── Block spawning ────────────────────────────────────────────────────────
+    function spawnBlock() {
+      const last  = G.layers[G.layers.length - 1];
+      const speed = Math.min(1.3 + G.score * 0.14, MAX_SPEED);
+      G.cur = {
+        x:     -last.w,   // start off-screen left
+        w:     last.w,
+        y:     last.y - LAYER_H,
+        dir:   1,
+        speed,
+        color: PALETTE[G.layers.length % PALETTE.length],
+      };
+    }
+
+    // ── Place ─────────────────────────────────────────────────────────────────
+    function place() {
+      if (G.state !== 'play' || !G.cur) return;
+      const last = G.layers[G.layers.length - 1];
+      const c    = G.cur;
+
+      const ol = Math.max(c.x, last.x);
+      const or = Math.min(c.x + c.w, last.x + last.w);
+      const ow = or - ol;
+
+      if (ow <= 0) {
+        burst(c.x, c.y, c.w, c.color, 28);
+        sfxFail();
+        G.state = 'over';
+        if (G.score > G.highScore) { G.highScore = G.score; saveHS(G.score); }
+        return;
+      }
+
+      const isPerfect = Math.abs(c.x - last.x) <= PERFECT_PX;
+
+      if (!isPerfect) {
+        if (c.x < ol)         burst(c.x, c.y, ol - c.x,           c.color, 10);
+        if (c.x + c.w > or)   burst(or,  c.y, (c.x + c.w) - or,  c.color, 10);
+      }
+
+      const nl = {
+        x:     isPerfect ? last.x : ol,
+        w:     isPerfect ? last.w : ow,
+        y:     c.y,
+        color: c.color,
+      };
+      G.layers.push(nl);
+      G.score++;
+
+      if (isPerfect) {
+        G.flashAlpha = 0.32;
+        G.floats.push({ x: W / 2, y: nl.y + G.camOff - 10, a: 1 });
+        sfxPerfect();
+      } else {
+        sfxPlace(G.score);
+      }
+
+      // Advance camera when tower reaches upper 42% of screen
+      const desired = CAM_TARGET_Y - nl.y;
+      if (desired > G.targetCam) G.targetCam = desired;
+
+      spawnBlock();
+    }
+
+    // ── Particles ─────────────────────────────────────────────────────────────
+    function burst(x, y, w, color, n) {
+      for (let i = 0; i < n; i++) {
+        G.particles.push({
+          x: x + Math.random() * w,
+          y: y + LAYER_H / 2,
+          vx: (Math.random() - 0.5) * 7,
+          vy: -Math.random() * 5 - 1,
+          color,
+          life: 1,
+          decay: 0.013 + Math.random() * 0.017,
+          r: Math.random() * 5 + 2,
+        });
+      }
+    }
+
+    // ── Update ────────────────────────────────────────────────────────────────
+    function update() {
+      if (G.state === 'play' && G.cur) {
+        G.cur.x += G.cur.speed * G.cur.dir;
+        if (G.cur.x + G.cur.w > W + 12 || G.cur.x < -12) G.cur.dir *= -1;
+      }
+
+      // Smooth camera
+      G.camOff += (G.targetCam - G.camOff) * 0.1;
+
+      // Particles
+      G.particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.vy += 0.3; p.vx *= 0.94;
+        p.life -= p.decay;
+      });
+      G.particles = G.particles.filter(p => p.life > 0);
+
+      // Flash
+      if (G.flashAlpha > 0) G.flashAlpha = Math.max(0, G.flashAlpha - 0.022);
+
+      // Float texts
+      G.floats.forEach(t => { t.y -= 1.1; t.a -= 0.022; });
+      G.floats = G.floats.filter(t => t.a > 0);
+    }
+
+    // ── Draw helpers ──────────────────────────────────────────────────────────
+    function drawBg() {
+      ctx.fillStyle = '#0D1B2A';
+      ctx.fillRect(0, 0, W, H);
+      // subtle grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < W; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = 0; y < H; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+    }
+
+    function drawLayer(l, isMoving) {
+      const { x, y, w, color } = l;
+
+      // Body
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, LAYER_H);
+
+      // FDM extrusion lines
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 1;
+      for (let lx = x + 4; lx < x + w; lx += 4) {
+        ctx.beginPath(); ctx.moveTo(lx, y); ctx.lineTo(lx, y + LAYER_H); ctx.stroke();
+      }
+
+      // Top sheen
+      const sheen = ctx.createLinearGradient(x, y, x, y + LAYER_H);
+      sheen.addColorStop(0,    'rgba(255,255,255,0.28)');
+      sheen.addColorStop(0.35, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sheen;
+      ctx.fillRect(x, y, w, LAYER_H);
+
+      // Nozzle glow border on moving block
+      if (isMoving) {
+        ctx.shadowBlur  = 14;
+        ctx.shadowColor = color;
+        ctx.strokeStyle = color;
+        ctx.lineWidth   = 2;
+        ctx.strokeRect(x, y, w, LAYER_H);
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function drawNozzle(l) {
+      // Print-head nozzle triangle above the moving block
+      const cx = l.x + l.w / 2;
+      const ty = l.y - 2;
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.beginPath();
+      ctx.moveTo(cx - 8, ty - 14);
+      ctx.lineTo(cx + 8, ty - 14);
+      ctx.lineTo(cx,     ty);
+      ctx.closePath();
+      ctx.fill();
+      // Nozzle tip glow
+      ctx.beginPath();
+      ctx.arc(cx, ty + 1, 3, 0, Math.PI * 2);
+      ctx.fillStyle = l.color;
+      ctx.shadowBlur  = 8;
+      ctx.shadowColor = l.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function drawHUD() {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 34px "Courier New", monospace';
+      ctx.fillText(G.score, W / 2, 40);
+      ctx.font = '10px "Courier New", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillText('LAYERS', W / 2, 56);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = 'rgba(255,215,0,0.45)';
+      ctx.font = '10px "Courier New", monospace';
+      ctx.fillText('BEST ' + G.highScore, W - 10, 18);
+    }
+
+    function drawMenu() {
+      ctx.fillStyle = 'rgba(13,27,42,0.7)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.textAlign = 'center';
+
+      // Title glow
+      ctx.shadowBlur  = 26;
+      ctx.shadowColor = '#42A5F5';
+      ctx.fillStyle   = '#42A5F5';
+      ctx.font = 'bold 44px "Courier New", monospace';
+      ctx.fillText('LAYER UP', W / 2, H / 2 - 72);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '11px "Courier New", monospace';
+      ctx.fillText('A 3D PRINTING STACKING GAME', W / 2, H / 2 - 40);
+
+      // Start prompt (pulsing)
+      const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 400);
+      ctx.fillStyle = `rgba(255,255,255,${pulse})`;
+      ctx.font = 'bold 14px "Courier New", monospace';
+      ctx.fillText('TAP · CLICK · SPACEBAR', W / 2, H / 2 + 8);
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '11px "Courier New", monospace';
+      ctx.fillText('to place each layer', W / 2, H / 2 + 30);
+
+      const h = getHS();
+      if (h > 0) {
+        ctx.fillStyle = 'rgba(255,215,0,0.65)';
+        ctx.font = '11px "Courier New", monospace';
+        ctx.fillText('BEST: ' + h + ' LAYERS', W / 2, H / 2 + 62);
+      }
+
+      // Instructions mini
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.font = '9px "Courier New", monospace';
+      ctx.fillText('PERFECT alignment = keeps full width', W / 2, H - 28);
+    }
+
+    function drawOver() {
+      ctx.fillStyle = 'rgba(13,27,42,0.85)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.textAlign = 'center';
+
+      ctx.shadowBlur  = 20;
+      ctx.shadowColor = '#FF6B6B';
+      ctx.fillStyle   = '#FF6B6B';
+      ctx.font = 'bold 26px "Courier New", monospace';
+      ctx.fillText('PRINT FAILED', W / 2, H / 2 - 82);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '11px "Courier New", monospace';
+      ctx.fillText('LAYERS PRINTED', W / 2, H / 2 - 32);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 58px "Courier New", monospace';
+      ctx.fillText(G.score, W / 2, H / 2 + 30);
+
+      if (G.score > 0 && G.score >= G.highScore) {
+        ctx.shadowBlur  = 14;
+        ctx.shadowColor = '#FFD700';
+        ctx.fillStyle   = '#FFD700';
+        ctx.font = 'bold 13px "Courier New", monospace';
+        ctx.fillText('✦  NEW BEST  ✦', W / 2, H / 2 + 64);
+        ctx.shadowBlur = 0;
+      } else if (G.highScore > 0) {
+        ctx.fillStyle = 'rgba(255,215,0,0.45)';
+        ctx.font = '11px "Courier New", monospace';
+        ctx.fillText('BEST: ' + G.highScore, W / 2, H / 2 + 64);
+      }
+
+      const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 450);
+      ctx.fillStyle = `rgba(255,255,255,${pulse * 0.85})`;
+      ctx.font = 'bold 13px "Courier New", monospace';
+      ctx.fillText('TAP TO PRINT AGAIN', W / 2, H / 2 + 112);
+    }
+
+    // ── Main draw ─────────────────────────────────────────────────────────────
+    function draw() {
+      drawBg();
+
+      if (G.state === 'menu') { drawMenu(); return; }
+
+      // World (camera-translated)
+      ctx.save();
+      ctx.translate(0, G.camOff);
+
+      G.layers.forEach(l => drawLayer(l, false));
+
+      if (G.state === 'play' && G.cur) {
+        ctx.globalAlpha = 0.88;
+        drawLayer(G.cur, true);
+        ctx.globalAlpha = 1;
+        drawNozzle(G.cur);
+      }
+
+      G.particles.forEach(p => {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle   = p.color;
+        ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+      });
+      ctx.globalAlpha = 1;
+
+      ctx.restore();
+
+      // Screen-space overlays
+      if (G.flashAlpha > 0) {
+        ctx.fillStyle = `rgba(255,255,255,${G.flashAlpha})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      G.floats.forEach(t => {
+        ctx.globalAlpha = t.a;
+        ctx.fillStyle   = '#FFD700';
+        ctx.shadowBlur  = 8;
+        ctx.shadowColor = '#FFD700';
+        ctx.font = 'bold 13px "Courier New", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('PERFECT!', t.x, t.y);
+        ctx.shadowBlur = 0;
+      });
+      ctx.globalAlpha = 1;
+
+      if (G.state === 'play') drawHUD();
+      else if (G.state === 'over') drawOver();
+    }
+
+    // ── Input ─────────────────────────────────────────────────────────────────
+    function onInput() {
+      if (G.state === 'menu') {
+        initPlay();
+      } else if (G.state === 'play') {
+        place();
+      } else if (G.state === 'over' && !G.overCooldown) {
+        G.overCooldown = true;
+        setTimeout(initMenu, 60);
+      }
+    }
+
+    canvas.addEventListener('click', onInput);
+    canvas.addEventListener('touchend', e => { e.preventDefault(); onInput(); }, { passive: false });
+    document.addEventListener('keydown', e => {
+      if (['Space','ArrowUp','Enter'].includes(e.code)) { e.preventDefault(); onInput(); }
+    });
+
+    // ── Loop ──────────────────────────────────────────────────────────────────
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    initMenu();
+    loop();
+  })();
+  </script>
+</body>
+</html>
