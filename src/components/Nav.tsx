@@ -18,10 +18,10 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
+    <header className="border-b border-slate-700 bg-slate-900 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="Precision Printworks" width={160} height={60} className="h-10 w-auto" priority />
+          <Image src="/logo.png" alt="Precision Printworks" width={200} height={75} className="h-12 w-auto" priority />
         </Link>
 
         {/* Desktop nav */}
@@ -32,8 +32,8 @@ export default function Nav() {
               href={l.href}
               className={
                 pathname === l.href
-                  ? "text-green-600"
-                  : "text-slate-600 hover:text-slate-900 transition-colors"
+                  ? "text-green-400"
+                  : "text-slate-300 hover:text-white transition-colors"
               }
             >
               {l.label}
@@ -49,7 +49,7 @@ export default function Nav() {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden text-slate-600 hover:text-slate-900"
+          className="md:hidden text-slate-300 hover:text-white"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -67,13 +67,13 @@ export default function Nav() {
 
       {/* Mobile nav */}
       {open && (
-        <nav className="md:hidden border-t border-slate-100 px-4 py-4 flex flex-col gap-4 text-sm font-medium bg-white">
+        <nav className="md:hidden border-t border-slate-700 px-4 py-4 flex flex-col gap-4 text-sm font-medium bg-slate-900">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className={pathname === l.href ? "text-green-600" : "text-slate-600"}
+              className={pathname === l.href ? "text-green-400" : "text-slate-300"}
             >
               {l.label}
             </Link>
