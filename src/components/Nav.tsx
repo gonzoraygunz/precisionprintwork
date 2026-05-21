@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -19,8 +20,8 @@ export default function Nav() {
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg tracking-tight text-slate-900">
-          Precision <span className="text-green-600">Printworks</span>
+        <Link href="/" className="flex items-center">
+          <Image src="/logo.png" alt="Precision Printworks" width={160} height={60} className="h-10 w-auto" priority />
         </Link>
 
         {/* Desktop nav */}

@@ -1,13 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-slate-900 text-slate-400">
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between gap-8">
         <div>
-          <p className="text-white font-bold text-lg tracking-tight">
-            Precision <span className="text-green-600">Printworks</span>
-          </p>
+          <Image src="/logo.png" alt="Precision Printworks" width={160} height={60} className="h-12 w-auto mb-2" />
           <p className="mt-2 text-sm max-w-xs">
             Custom 3D printing — parts, minis, terrain, gifts, and more.
           </p>
