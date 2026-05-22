@@ -18,7 +18,7 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-slate-700 bg-slate-900 sticky top-0 z-50">
+    <header className="border-b border-slate-700 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image src="/logo.png" alt="Precision Printworks" width={1408} height={768} className="h-36 w-auto" priority />
@@ -32,7 +32,7 @@ export default function Nav() {
               href={l.href}
               className={
                 pathname === l.href
-                  ? "text-green-400"
+                  ? "text-cyan-400"
                   : "text-slate-300 hover:text-white transition-colors"
               }
             >
@@ -41,7 +41,7 @@ export default function Nav() {
           ))}
           <Link
             href="/order"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:glow-blue transition-all"
           >
             Get a Quote
           </Link>
@@ -49,7 +49,7 @@ export default function Nav() {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden text-slate-300 hover:text-white"
+          className="md:hidden text-slate-300 hover:text-white transition-colors"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -65,28 +65,30 @@ export default function Nav() {
         </button>
       </div>
 
-      {/* Mobile nav */}
-      {open && (
-        <nav className="md:hidden border-t border-slate-700 px-4 py-4 flex flex-col gap-4 text-sm font-medium bg-slate-900">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className={pathname === l.href ? "text-green-400" : "text-slate-300"}
-            >
-              {l.label}
-            </Link>
-          ))}
+      {/* Mobile nav — slide down via max-height transition */}
+      <nav
+        className={`md:hidden border-t border-slate-700 px-4 flex flex-col gap-4 text-sm font-medium bg-slate-900/95 backdrop-blur-md overflow-hidden transition-all duration-300 ease-in-out ${
+          open ? "max-h-80 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
+        }`}
+      >
+        {links.map((l) => (
           <Link
-            href="/order"
+            key={l.href}
+            href={l.href}
             onClick={() => setOpen(false)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition-colors"
+            className={pathname === l.href ? "text-cyan-400" : "text-slate-300 hover:text-white transition-colors"}
           >
-            Get a Quote
+            {l.label}
           </Link>
-        </nav>
-      )}
+        ))}
+        <Link
+          href="/order"
+          onClick={() => setOpen(false)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition-colors"
+        >
+          Get a Quote
+        </Link>
+      </nav>
     </header>
   );
 }
