@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Icon from "@/components/Icon";
 import type { Project } from "@/lib/projects";
 
 export default function PortfolioGrid({ projects }: { projects: Project[] }) {
@@ -27,7 +28,7 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
           <button
             key={project.src}
             onClick={() => setSelected(project)}
-            className="rounded-xl overflow-hidden border border-slate-700 bg-slate-800 hover:border-cyan-700 hover:glow-cyan transition-all duration-300 text-left group cursor-zoom-in"
+            className="rounded-2xl overflow-hidden border border-line bg-surface-raised hover:border-accent-line hover:glow-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-all duration-300 text-left group cursor-zoom-in"
           >
             <div className="aspect-square relative bg-[#e7e7e7]">
               <Image
@@ -38,9 +39,9 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
               />
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-white text-sm">{project.title}</h3>
-              <p className="text-slate-400 text-xs mt-1">{project.description}</p>
-              <p className="text-cyan-400 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <h3 className="font-semibold text-fg text-sm">{project.title}</h3>
+              <p className="text-fg-muted text-xs mt-1">{project.description}</p>
+              <p className="text-accent text-xs mt-2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity" aria-hidden="true">
                 Click to enlarge →
               </p>
             </div>
@@ -55,7 +56,10 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
           onClick={() => setSelected(null)}
         >
           <div
-            className="relative max-w-xl w-full bg-slate-800 gradient-border rounded-2xl overflow-hidden shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selected.title}
+            className="relative max-w-xl w-full gradient-border rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="aspect-square relative bg-[#e7e7e7]">
@@ -66,16 +70,16 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
                 className="object-contain p-6"
               />
             </div>
-            <div className="p-5 border-t border-slate-700">
-              <h3 className="font-semibold text-white">{selected.title}</h3>
-              <p className="text-slate-400 text-sm mt-1">{selected.description}</p>
+            <div className="p-5 border-t border-line">
+              <h3 className="font-semibold text-fg">{selected.title}</h3>
+              <p className="text-fg-muted text-sm mt-1">{selected.description}</p>
             </div>
             <button
               onClick={() => setSelected(null)}
-              className="absolute top-3 right-3 bg-slate-900/80 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+              className="absolute top-3 right-3 bg-surface/80 hover:bg-surface-overlay text-fg-muted hover:text-fg rounded-full w-11 h-11 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Close"
             >
-              ✕
+              <Icon name="close" size={18} strokeWidth={2} />
             </button>
           </div>
         </div>

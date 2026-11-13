@@ -2,6 +2,8 @@ import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 import PageHeader from "@/components/PageHeader";
 import Icon, { type IconName } from "@/components/Icon";
+import SectionHeader from "@/components/SectionHeader";
+import { btnPrimary, card } from "@/lib/styles";
 
 const services: { icon: IconName; title: string; body: string; examples: string[] }[] = [
   { icon: "d20", title: "D&D Minis & Terrain", body: "High-detail resin-printed miniatures and modular terrain for tabletop RPGs and wargames. Paint-ready, crisp details, any scale.", examples: ["Character and monster miniatures", "Dungeon tiles and scatter terrain", "Custom minis from character descriptions", "Bulk NPC packs"] },
@@ -24,27 +26,26 @@ const materials = [
 
 export default function Services() {
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-surface min-h-screen">
       <PageHeader eyebrow="What I Offer" title="Services">
         Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can print it. FDM and resin available.
       </PageHeader>
       <div className="max-w-5xl mx-auto px-4 py-20">
-
         <div className="grid md:grid-cols-2 gap-6 mb-20">
           {services.map((s, i) => (
             <FadeIn key={s.title} delay={i * 60}>
-              <div className="border border-slate-700 bg-slate-800 rounded-2xl p-6 hover:border-cyan-700 hover:glow-cyan transition-all duration-300 h-full">
+              <div className={`${card} p-6 h-full hover:border-accent-line hover:glow-accent transition-all duration-300`}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-400/20">
-                    <Icon name={s.icon} className="w-5 h-5" />
-                  </span>
-                  <h2 className="text-lg font-semibold text-white">{s.title}</h2>
+                  <div className="bg-surface-overlay text-accent w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+                    <Icon name={s.icon} size={20} />
+                  </div>
+                  <h2 className="text-xl font-semibold text-fg">{s.title}</h2>
                 </div>
-                <p className="text-slate-400 text-sm mb-4">{s.body}</p>
+                <p className="text-fg-muted text-sm leading-relaxed mb-4">{s.body}</p>
                 <ul className="space-y-1">
                   {s.examples.map((e) => (
-                    <li key={e} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-cyan-400 mt-0.5">•</span>
+                    <li key={e} className="text-sm text-fg-secondary flex items-start gap-2">
+                      <span className="text-accent mt-0.5" aria-hidden="true">•</span>
                       {e}
                     </li>
                   ))}
@@ -57,29 +58,25 @@ export default function Services() {
         {/* Materials */}
         <FadeIn>
           <div className="mb-20">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest text-center mb-3">Materials</p>
-            <h2 className="text-2xl font-bold text-white mb-8 text-center">What It&apos;s Made From</h2>
+            <SectionHeader eyebrow="Materials" title="What It's Made From" className="mb-8" />
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
               {materials.map((m) => (
-                <div key={m.name} className="circuit-bg bg-slate-800 gradient-border rounded-xl p-5 hover:glow-cyan transition-all duration-300">
-                  <p className="font-bold text-amber-400 text-lg mb-1">{m.name}</p>
-                  <p className="text-slate-400 text-sm">{m.note}</p>
+                <div key={m.name} className="gradient-border rounded-xl p-5 hover:glow-accent transition-all duration-300">
+                  <p className="font-mono font-semibold uppercase text-brass text-lg mb-1">{m.name}</p>
+                  <p className="text-fg-muted text-sm leading-relaxed">{m.note}</p>
                 </div>
               ))}
             </div>
-            <p className="text-center text-slate-500 text-sm mt-4">Need a specific material? Ask — availability varies.</p>
+            <p className="text-center text-fg-muted text-sm mt-4">Need a specific material? Ask — availability varies.</p>
           </div>
         </FadeIn>
 
         {/* CTA */}
         <FadeIn>
-          <div className="circuit-bg bg-slate-800 gradient-border rounded-2xl p-10 text-center">
-            <div className="mx-auto mb-5 w-14 h-14 rounded-2xl flex items-center justify-center bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/30">
-              <Icon name="layers" className="w-7 h-7" />
-            </div>
-            <h2 className="text-2xl font-bold text-white mb-3">Ready to make something?</h2>
-            <p className="text-slate-400 mb-6">Quotes are free. Describe your project and I&apos;ll get back to you within a day.</p>
-            <Link href="/order" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 hover:glow-blue transition-all inline-block">
+          <div className="gradient-border rounded-2xl p-10 text-center">
+            <h2 className="text-2xl font-bold text-fg mb-3">Ready to make something?</h2>
+            <p className="text-fg-muted mb-6">Quotes are free. Describe your project and I&apos;ll get back to you within a day.</p>
+            <Link href="/order" className={btnPrimary}>
               Request a Quote
             </Link>
           </div>

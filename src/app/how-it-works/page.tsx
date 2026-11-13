@@ -3,6 +3,8 @@ import FadeIn from "@/components/FadeIn";
 import FaqAccordion from "@/components/FaqAccordion";
 import Icon from "@/components/Icon";
 import PageHeader from "@/components/PageHeader";
+import SectionHeader from "@/components/SectionHeader";
+import { btnPrimary, card } from "@/lib/styles";
 
 const steps = [
   {
@@ -33,7 +35,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-surface min-h-screen">
       <PageHeader eyebrow="Process" title="How It Works">
         Simple four-step process — from problem to printed part.
       </PageHeader>
@@ -42,21 +44,21 @@ export default function HowItWorks() {
         {/* Steps as a vertical timeline */}
         <div className="relative mb-24">
           <div
-            className="absolute left-[22px] md:left-7 top-6 md:top-7 bottom-6 md:bottom-7 w-px bg-linear-to-b from-cyan-500/60 via-amber-400/40 to-cyan-500/20"
+            className="absolute left-[22px] md:left-7 top-6 md:top-7 bottom-6 md:bottom-7 w-px bg-linear-to-b from-accent/60 via-brass/40 to-accent/20"
             aria-hidden="true"
           />
           <ol>
             {steps.map((s, i) => (
               <li key={s.n} className="pb-10 md:pb-12 last:pb-0">
                 <FadeIn delay={i * 80} className="relative pl-15 md:pl-24">
-                  <div className="absolute left-0 top-0 w-11 h-11 md:w-14 md:h-14 rounded-full bg-slate-900 border border-amber-400/50 flex items-center justify-center text-sm md:text-lg font-bold text-amber-300 font-mono shadow-[0_0_0_6px_rgb(15_23_42)]">
+                  <div className="absolute left-0 top-0 w-11 h-11 md:w-14 md:h-14 rounded-full bg-surface border border-brass/50 flex items-center justify-center text-sm md:text-lg font-semibold text-brass font-mono shadow-[0_0_0_6px_var(--color-surface)]">
                     {s.n}
                   </div>
-                  <div className="rounded-2xl border border-slate-700/80 bg-slate-800/60 p-5 md:p-7 hover:border-slate-600 transition-colors">
-                    <h2 className="text-xl font-bold text-white mb-3">{s.title}</h2>
-                    <p className="text-slate-400 leading-relaxed mb-4">{s.body}</p>
-                    <p className="flex items-start gap-2.5 text-sm text-cyan-200 bg-cyan-500/5 border border-cyan-500/20 rounded-lg px-4 py-2.5">
-                      <Icon name="bulb" className="w-4 h-4 mt-0.5 shrink-0 text-cyan-400" />
+                  <div className={`${card} p-5 md:p-7`}>
+                    <h2 className="text-xl font-semibold text-fg mb-3">{s.title}</h2>
+                    <p className="text-fg-muted leading-relaxed mb-4">{s.body}</p>
+                    <p className="flex items-start gap-2.5 text-sm text-fg-secondary bg-surface border border-line rounded-lg px-4 py-2.5">
+                      <Icon name="bulb" size={16} className="text-accent shrink-0 mt-0.5" />
                       {s.tip}
                     </p>
                   </div>
@@ -68,26 +70,22 @@ export default function HowItWorks() {
 
         {/* FAQ */}
         <FadeIn>
-          <div className="mb-20">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest text-center mb-3">FAQ</p>
-            <h2 className="text-3xl font-bold text-white mb-10 text-center">Common Questions</h2>
+          <div className="mb-20 max-w-3xl mx-auto">
+            <SectionHeader eyebrow="FAQ" title="Common Questions" className="mb-10" />
             <FaqAccordion />
           </div>
         </FadeIn>
 
         {/* CTA */}
         <FadeIn>
-          <div className="relative overflow-hidden rounded-3xl border border-slate-700 bg-slate-800/60 px-6 py-12 text-center">
+          <div className={`${card} relative overflow-hidden rounded-3xl px-6 py-12 text-center`}>
             <div className="absolute inset-0 hero-glow pointer-events-none" aria-hidden="true" />
             <div className="relative">
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Ready to submit a request?</h2>
-              <p className="text-slate-400 mb-8">Takes about 2 minutes. Quotes are free.</p>
-              <Link
-                href="/order"
-                className="group inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-500 hover:glow-blue transition-all"
-              >
+              <h2 className="text-2xl md:text-3xl font-bold text-fg mb-3">Ready to submit a request?</h2>
+              <p className="text-fg-muted mb-8">Takes about 2 minutes. Quotes are free.</p>
+              <Link href="/order" className={`${btnPrimary} group`}>
                 Request a Quote
-                <Icon name="arrow" className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
           </div>

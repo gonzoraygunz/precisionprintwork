@@ -1,11 +1,12 @@
 "use client";
 
-import Icon from "@/components/Icon";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { upload } from "@vercel/blob/client";
+import Icon from "@/components/Icon";
+import { btnPrimary, inputClass, textLink } from "@/lib/styles";
 import {
   BLOB_PREFIX,
   DIRECT_UPLOAD_LIMIT_BYTES,
@@ -26,31 +27,40 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const inputClass =
-  "w-full border border-slate-600/80 bg-slate-900/60 text-white placeholder:text-slate-500 rounded-lg px-4 py-2.5 text-sm transition-colors hover:border-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30";
-const labelClass = "block text-sm font-medium text-slate-300 mb-1.5";
-const errorClass = "text-red-400 text-xs mt-1.5";
-const legendClass = "w-full text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-1";
+const labelClass = "block text-sm font-medium text-fg-secondary mb-1.5";
+const legendClass = "font-mono text-[0.8125rem] font-medium uppercase tracking-[0.14em] text-fg-muted";
 
-function Legend({ children }: { children: React.ReactNode }) {
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
   return (
-    <legend className={legendClass}>
-      <span className="flex items-center gap-3">
-        {children}
-        <span className="flex-1 h-px bg-slate-700" aria-hidden="true" />
-      </span>
-    </legend>
+    <p id={id} className="text-danger text-xs mt-1.5">
+      {message}
+    </p>
   );
 }
 
 export default function OrderForm() {
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
+  const [dragging, setDragging] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [dragging, setDragging] = useState(false);
-  const [fileError, setFileError] = useState("");
-  const [uploadPct, setUploadPct] = useState<number | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  // Wires a field's error state to its input for screen readers.
+  const a11y = (field: keyof FormData) =>
+    errors[field]
+      ? { "aria-invalid": true as const, "aria-describedby": `${field}-error` }
+      : {};
+
+  // Single entry point for picking, dropping and removing a file.
   function pickFile(f: File | null) {
     setFileError("");
     if (!f) return setFile(null);
@@ -64,13 +74,6 @@ export default function OrderForm() {
     }
     setFile(f);
   }
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   async function onSubmit(data: FormData) {
     setStatus("submitting");
@@ -118,18 +121,15 @@ export default function OrderForm() {
 
   if (status === "success") {
     return (
-      <div className="py-8 text-center">
-        <div className="mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30">
-          <Icon name="check" className="w-7 h-7" />
+      <div className="py-8 text-center" role="status">
+        <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-surface-overlay text-accent flex items-center justify-center">
+          <Icon name="check" strokeWidth={2} />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">Request received!</h2>
-        <p className="text-slate-400">
+        <h2 className="text-xl font-bold text-fg mb-2">Request received!</h2>
+        <p className="text-fg-muted">
           I&apos;ll review your request and send a quote to your email within 1–2 business days.
         </p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="mt-6 text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
-        >
+        <button onClick={() => setStatus("idle")} className={`${textLink} mt-6 text-sm font-medium`}>
           Submit another request
         </button>
       </div>
@@ -140,52 +140,28 @@ export default function OrderForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* Contact */}
       <fieldset className="space-y-4">
-        <Legend>Your Info</Legend>
+        <legend className={`${legendClass} mb-4`}>Your Info</legend>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="name" className={labelClass}>Name *</label>
-            <input
-              id="name"
-              {...register("name")}
-              autoComplete="name"
-              className={inputClass}
-              placeholder="Your name"
-              aria-invalid={!!errors.name}
-            />
-            {errors.name && <p className={errorClass}>{errors.name.message}</p>}
+            <input id="name" {...register("name")} {...a11y("name")} autoComplete="name" className={inputClass} placeholder="Your name" />
+            <FieldError id="name-error" message={errors.name?.message} />
           </div>
           <div>
             <label htmlFor="email" className={labelClass}>Email *</label>
-            <input
-              id="email"
-              {...register("email")}
-              type="email"
-              autoComplete="email"
-              className={inputClass}
-              placeholder="you@example.com"
-              aria-invalid={!!errors.email}
-            />
-            {errors.email && <p className={errorClass}>{errors.email.message}</p>}
+            <input id="email" {...register("email")} {...a11y("email")} type="email" autoComplete="email" className={inputClass} placeholder="you@example.com" />
+            <FieldError id="email-error" message={errors.email?.message} />
           </div>
         </div>
         <div>
-          <label htmlFor="phone" className={labelClass}>
-            Phone <span className="text-slate-500 font-normal">(optional)</span>
-          </label>
-          <input
-            id="phone"
-            {...register("phone")}
-            type="tel"
-            autoComplete="tel"
-            className={inputClass}
-            placeholder="(555) 000-0000"
-          />
+          <label htmlFor="phone" className={labelClass}>Phone (optional)</label>
+          <input id="phone" {...register("phone")} type="tel" autoComplete="tel" className={inputClass} placeholder="(555) 000-0000" />
         </div>
       </fieldset>
 
       {/* Part details */}
       <fieldset className="space-y-4">
-        <Legend>Part Details</Legend>
+        <legend className={`${legendClass} mb-4`}>Part Details</legend>
         <div>
           <label htmlFor="description" className={labelClass}>
             Describe your part or project *
@@ -193,27 +169,19 @@ export default function OrderForm() {
           <textarea
             id="description"
             {...register("description")}
+            {...a11y("description")}
             rows={5}
             className={inputClass + " resize-y min-h-32"}
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
-            aria-invalid={!!errors.description}
           />
-          {errors.description && <p className={errorClass}>{errors.description.message}</p>}
+          <FieldError id="description-error" message={errors.description?.message} />
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="quantity" className={labelClass}>Quantity *</label>
-            <input
-              id="quantity"
-              {...register("quantity")}
-              type="number"
-              min="1"
-              className={inputClass}
-              placeholder="1"
-              aria-invalid={!!errors.quantity}
-            />
-            {errors.quantity && <p className={errorClass}>{errors.quantity.message}</p>}
+            <input id="quantity" {...register("quantity")} {...a11y("quantity")} type="number" min="1" className={inputClass} placeholder="1" />
+            <FieldError id="quantity-error" message={errors.quantity?.message} />
           </div>
           <div>
             <label htmlFor="material" className={labelClass}>Material preference</label>
@@ -237,23 +205,10 @@ export default function OrderForm() {
           </select>
         </div>
 
-        {/* File upload: click, keyboard (focusable input), or drag and drop */}
+        {/* File upload: click, keyboard (focusable sr-only input), or drag and drop */}
         <div>
-          <p className={labelClass}>
-            Attach a file <span className="text-slate-500 font-normal">(optional)</span>
-          </p>
-          <input
-            type="file"
-            id="file"
-            accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
-            className="peer sr-only"
-            onChange={(e) => {
-              pickFile(e.target.files?.[0] ?? null);
-              e.target.value = ""; // allow re-picking the same file after "Remove file"
-            }}
-          />
-          <label
-            htmlFor="file"
+          <p className={labelClass}>Attach a file (optional)</p>
+          <div
             onDragOver={(e) => {
               e.preventDefault();
               setDragging(true);
@@ -265,46 +220,57 @@ export default function OrderForm() {
               const dropped = e.dataTransfer.files?.[0];
               if (dropped) pickFile(dropped);
             }}
-            className={`flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-8 text-center cursor-pointer transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-cyan-500/40 ${
-              dragging
-                ? "border-cyan-400 bg-cyan-500/10"
-                : "border-slate-600 bg-slate-900/40 hover:border-cyan-600 hover:bg-slate-900/60"
+            className={`relative border border-dashed rounded-xl px-4 py-6 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-colors ${
+              dragging ? "border-accent bg-accent/10" : "border-line-control bg-surface hover:border-accent"
             }`}
           >
-            {file ? (
-              <>
-                <span className="w-10 h-10 rounded-full flex items-center justify-center bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-400/30">
-                  <Icon name="paperclip" className="w-5 h-5" />
-                </span>
-                <span className="text-cyan-300 font-medium text-sm break-all">{file.name}</span>
-                <span className="text-xs text-slate-500">
-                  {formatBytes(file.size)} · Click to choose a different file
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-slate-400 ring-1 ring-slate-600">
-                  <Icon name="upload" className="w-5 h-5" />
-                </span>
-                <span className="text-sm text-slate-400">
-                  <span className="text-cyan-400 font-medium">Click to upload</span> or drag and drop
-                </span>
-                <span className="text-xs text-slate-500">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
-              </>
-            )}
-          </label>
+            <input
+              type="file"
+              id="file"
+              accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
+              className="sr-only"
+              aria-describedby={fileError ? "file-error" : "file-hint"}
+              onChange={(e) => {
+                pickFile(e.target.files?.[0] ?? null);
+                e.target.value = ""; // allow re-picking the same file after "Remove file"
+              }}
+            />
+            <label htmlFor="file" className="cursor-pointer flex items-center justify-center gap-3 text-sm text-fg-secondary">
+              {file ? (
+                <>
+                  <Icon name="paperclip" size={20} className="text-accent shrink-0" />
+                  <span>
+                    <span className="text-accent font-medium break-all">{file.name}</span>
+                    <span id="file-hint" className="block font-mono text-xs text-fg-muted mt-1">
+                      {formatBytes(file.size)} · click to choose a different file
+                    </span>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Icon name="upload" className="text-accent shrink-0" />
+                  <span>
+                    <span className="text-accent font-semibold">Click to upload</span> or drag and drop
+                    <span id="file-hint" className="block font-mono text-xs text-fg-muted mt-1">
+                      STL · OBJ · STEP · image · PDF — max 25 MB
+                    </span>
+                  </span>
+                </>
+              )}
+            </label>
+          </div>
           {file && (
             <button
               type="button"
               onClick={() => pickFile(null)}
-              className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+              className="mt-2 inline-flex items-center gap-1 text-xs text-fg-muted hover:text-fg transition-colors"
             >
-              <Icon name="x" className="w-3.5 h-3.5" />
+              <Icon name="close" size={14} strokeWidth={2} />
               Remove file
             </button>
           )}
           {fileError && (
-            <p role="alert" className={errorClass}>
+            <p id="file-error" role="alert" className="text-danger text-xs mt-1.5">
               {fileError}
             </p>
           )}
@@ -312,28 +278,25 @@ export default function OrderForm() {
       </fieldset>
 
       {status === "error" && (
-        <p role="alert" className="text-red-300 text-sm bg-red-950/60 border border-red-800 rounded-lg px-4 py-3">
+        <p role="alert" className="text-danger text-sm bg-danger-surface border border-danger-line rounded-lg px-4 py-3">
           {errorMsg}
         </p>
       )}
 
-      <div className="space-y-3">
-        <button
-          type="submit"
-          disabled={status === "submitting"}
-          className="group w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-500 hover:glow-blue transition-all disabled:opacity-60"
-        >
-          {status === "submitting" ? (
-            uploadPct !== null ? `Uploading file… ${uploadPct}%` : "Sending…"
-          ) : (
-            <>
-              Submit Request
-              <Icon name="arrow" className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </>
-          )}
-        </button>
-        <p className="text-center text-xs text-slate-500">Quotes are free. I&apos;ll respond within 1–2 business days.</p>
-      </div>
+      <button type="submit" disabled={status === "submitting"} className={`${btnPrimary} group w-full`}>
+        {status === "submitting" ? (
+          uploadPct !== null ? `Uploading file… ${uploadPct}%` : "Sending…"
+        ) : (
+          <>
+            Submit Request
+            <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
+          </>
+        )}
+      </button>
+
+      <p className="text-center text-xs text-fg-muted">
+        Quotes are free. I&apos;ll respond within 1–2 business days.
+      </p>
     </form>
   );
 }

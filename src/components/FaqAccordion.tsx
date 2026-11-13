@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import Icon from "@/components/Icon";
 
 const faqs = [
@@ -24,45 +24,42 @@ const faqs = [
 
 export default function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const baseId = useId();
 
   return (
-    <div className="space-y-3 max-w-3xl mx-auto">
+    <div className="space-y-3">
       {faqs.map((f, i) => {
         const open = openIndex === i;
-        const panelId = `${baseId}-panel-${i}`;
         return (
-          <div
-            key={f.q}
-            className={`rounded-xl border transition-colors ${
-              open ? "border-cyan-700/70 bg-slate-800" : "border-slate-700/80 bg-slate-800/50 hover:border-slate-600"
-            }`}
-          >
-            <button
-              onClick={() => setOpenIndex(open ? null : i)}
-              aria-expanded={open}
-              aria-controls={panelId}
-              className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
-            >
-              <span className="font-semibold text-white">{f.q}</span>
-              <span
-                className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ring-1 transition-all duration-300 ${
-                  open ? "rotate-45 bg-cyan-500/15 ring-cyan-400/40 text-cyan-300" : "ring-slate-600 text-slate-400"
-                }`}
+          <div key={f.q} className="gradient-border rounded-xl overflow-hidden">
+            <h3>
+              <button
+                id={`faq-q-${i}`}
+                onClick={() => setOpenIndex(open ? null : i)}
+                aria-expanded={open}
+                aria-controls={`faq-a-${i}`}
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-surface-overlay/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
               >
-                <Icon name="plus" className="w-4 h-4" />
-              </span>
-            </button>
-            {/* grid-rows trick animates to the content's real height, so long answers never clip */}
+                <span className="font-semibold text-fg pr-4">{f.q}</span>
+                <Icon
+                  name="plus"
+                  size={20}
+                  strokeWidth={2}
+                  className={`text-accent shrink-0 transition-transform duration-300 ${open ? "rotate-45" : ""}`}
+                />
+              </button>
+            </h3>
+            {/* Slide open via grid-rows transition — no fixed max-height to clip long answers */}
             <div
-              id={panelId}
+              id={`faq-a-${i}`}
               role="region"
+              aria-labelledby={`faq-q-${i}`}
+              inert={!open}
               className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
                 open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               }`}
             >
               <div className="overflow-hidden">
-                <p className="px-5 pb-5 text-slate-400 text-sm leading-relaxed">{f.a}</p>
+                <p className="px-5 pb-4 text-fg-muted text-sm leading-relaxed">{f.a}</p>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import OrderForm from "@/components/OrderForm";
 import Icon from "@/components/Icon";
 import PageHeader from "@/components/PageHeader";
+import { card, textLink } from "@/lib/styles";
 
 const next = [
   { n: "01", text: "I review your request and reach out if anything needs clarifying." },
@@ -11,53 +12,53 @@ const next = [
 
 export default function Order() {
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-surface min-h-screen">
       <PageHeader eyebrow="Free Quote" title="Request a Quote">
         Describe your part, attach a file if you have one, and I&apos;ll send a quote to your email within
         1–2 business days.
       </PageHeader>
 
       <div className="max-w-6xl mx-auto px-4 py-16 md:py-20 grid lg:grid-cols-[1fr_20rem] gap-8 lg:gap-10 items-start">
-        <div className="rounded-3xl border border-slate-700/80 bg-slate-800/50 p-6 md:p-10">
+        <div className={`${card} rounded-3xl p-6 md:p-10`}>
           <OrderForm />
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-24">
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6">
-            <h2 className="text-sm font-semibold text-white uppercase tracking-widest mb-5">What happens next</h2>
+          <div className={`${card} p-6`}>
+            <h2 className="eyebrow mb-5">What happens next</h2>
             <ol className="space-y-4">
               {next.map((s) => (
                 <li key={s.n} className="flex gap-3">
-                  <span className="shrink-0 w-8 h-8 rounded-full border border-amber-400/50 text-amber-300 font-mono text-xs font-bold flex items-center justify-center">
+                  <span className="shrink-0 w-8 h-8 rounded-full border border-brass/50 text-brass font-mono text-xs font-semibold flex items-center justify-center">
                     {s.n}
                   </span>
-                  <p className="text-sm text-slate-400 leading-relaxed pt-1">{s.text}</p>
+                  <p className="text-sm text-fg-muted leading-relaxed pt-1">{s.text}</p>
                 </li>
               ))}
             </ol>
           </div>
 
-          <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
-            <div className="flex items-center gap-2 text-cyan-300 font-semibold mb-2">
-              <Icon name="bulb" className="w-4 h-4" />
+          <div className="rounded-2xl border border-accent-line bg-accent/5 p-6">
+            <p className="flex items-center gap-2 text-accent font-semibold mb-2">
+              <Icon name="bulb" size={16} strokeWidth={2} />
               No file? No problem.
-            </div>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            </p>
+            <p className="text-sm text-fg-muted leading-relaxed">
               A clear description, a photo of a broken part, or a rough sketch is enough to start.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6">
-            <p className="text-sm text-slate-400 mb-2">Prefer email?</p>
+          <div className={`${card} p-6`}>
+            <p className="text-sm text-fg-muted mb-2">Prefer email?</p>
             <a
               href="mailto:michael@precisionprintwork.com"
-              className="inline-flex items-center gap-2 text-sm text-white font-medium hover:text-cyan-300 transition-colors [overflow-wrap:anywhere]"
+              className="inline-flex items-center gap-2 text-sm text-fg font-medium hover:text-accent transition-colors [overflow-wrap:anywhere]"
             >
-              <Icon name="mail" className="w-4 h-4 shrink-0 text-cyan-400" />
+              <Icon name="mail" size={16} className="shrink-0 text-accent" />
               michael@precisionprintwork.com
             </a>
             <p className="mt-4 text-sm">
-              <Link href="/how-it-works" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              <Link href="/how-it-works" className={textLink}>
                 Read the FAQ →
               </Link>
             </p>
