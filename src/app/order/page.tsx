@@ -20,6 +20,12 @@ export default function Order() {
       </PageHeader>
 
       <div className="max-w-6xl mx-auto px-4 py-16 md:py-20 grid lg:grid-cols-[1fr_20rem] gap-8 lg:gap-10 items-start">
+        {/* Phones: the side panel's "what happens next", as one line above the form */}
+        <p className={`${card} lg:hidden rounded-xl px-4 py-3 flex items-center gap-3 text-sm text-fg-secondary -mb-2`}>
+          <span className="font-mono text-xs text-brass whitespace-nowrap">1–2 DAYS</span>
+          Quote by email · pay by link · ships in 3–5 days
+        </p>
+
         <div className={`${card} rounded-3xl p-6 md:p-10`}>
           <OrderForm />
         </div>

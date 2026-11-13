@@ -3,6 +3,7 @@ import FadeIn from "@/components/FadeIn";
 import PageHeader from "@/components/PageHeader";
 import Icon, { type IconName } from "@/components/Icon";
 import SectionHeader from "@/components/SectionHeader";
+import ServiceJumpNav from "@/components/ServiceJumpNav";
 import { btnPrimary, card } from "@/lib/styles";
 
 type Service = {
@@ -55,22 +56,7 @@ export default function Services() {
         Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can print it. FDM and resin available.
       </PageHeader>
 
-      {/* Jump index */}
-      <nav aria-label="Jump to a service" className="border-b border-line">
-        <ul className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap justify-center gap-2.5">
-          {services.map((s, i) => (
-            <li key={s.id}>
-              <a
-                href={`#${s.id}`}
-                className="inline-flex items-center gap-2 h-11 px-4 rounded-full border border-line bg-surface-raised text-sm font-medium text-fg-secondary hover:border-accent-line hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                <span className="font-mono text-xs text-brass">{String(i + 1).padStart(2, "0")}</span>
-                {s.short}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <ServiceJumpNav items={services.map((s) => ({ id: s.id, label: s.short }))} />
 
       <div className="max-w-5xl mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 gap-6 mb-24">
@@ -78,7 +64,7 @@ export default function Services() {
             <FadeIn key={s.id} delay={(i % 2) * 60} className="h-full">
               <article
                 id={s.id}
-                className={`${card} scroll-mt-28 h-full flex flex-col overflow-hidden hover:border-accent-line hover:glow-accent transition-all duration-300`}
+                className={`${card} scroll-mt-40 md:scroll-mt-28 h-full flex flex-col overflow-hidden hover:border-accent-line hover:glow-accent transition-all duration-300`}
               >
                 <div className="p-6 flex-1">
                   <div className="flex items-center gap-3 mb-3">

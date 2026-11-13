@@ -37,3 +37,46 @@ export const projects: Project[] = [
     tag: "Functional part",
   },
 ];
+
+/** A portfolio story: one design, optionally printed in several variants. */
+export type CaseStudy = {
+  id: string;
+  category: string;
+  title: string;
+  ask: string;
+  build: string;
+  spec: [label: string, value: string][];
+  /** Variants shown in the switcher; the first is selected by default. */
+  variants: Project[];
+  cta?: string;
+};
+
+export const caseStudies: CaseStudy[] = [
+  {
+    id: "cartridge-tray",
+    category: "Storage",
+    title: "Custom 510 Cartridge Tray",
+    ask: "A grid tray sized to hold cartridges upright and organized.",
+    build: "One design, printed in three finishes for home, shop, or lab.",
+    spec: [
+      ["Process", "FDM"],
+      ["Materials", "PLA · PETG"],
+      ["Variants", "3 · Any color"],
+    ],
+    variants: [projects[0], projects[1], projects[2]],
+    cta: "Get one in your color",
+  },
+  {
+    id: "led-holder",
+    category: "Functional",
+    title: "Machine Vision LED Holder",
+    ask: "Hold an alignment LED steady on a pipe of a specific diameter.",
+    build: "Clamp-style brackets modeled to that diameter, printed to fit.",
+    spec: [
+      ["Process", "FDM"],
+      ["Type", "Functional part"],
+      ["Started from", "Measurements"],
+    ],
+    variants: [projects[3]],
+  },
+];
