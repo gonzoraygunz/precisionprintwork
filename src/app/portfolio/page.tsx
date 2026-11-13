@@ -21,7 +21,7 @@ export default function Portfolio() {
               Every item here started with a request. Submit yours and get a free quote.
             </p>
             <Link href="/order" className={btnPrimary}>
-              Start a Request
+              Get a Free Quote
             </Link>
           </div>
         </FadeIn>

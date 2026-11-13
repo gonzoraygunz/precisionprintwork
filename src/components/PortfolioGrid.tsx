@@ -35,12 +35,13 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
                 src={project.src}
                 alt={project.alt}
                 fill
-                className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                className="object-contain p-4 motion-safe:group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-fg text-sm">{project.title}</h3>
               <p className="text-fg-muted text-xs mt-1">{project.description}</p>
+              <p className="font-mono text-xs uppercase tracking-wide text-brass mt-2">{project.tag}</p>
               <p className="text-accent text-xs mt-2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity" aria-hidden="true">
                 Click to enlarge →
               </p>

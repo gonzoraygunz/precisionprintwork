@@ -77,7 +77,7 @@ export default function Services() {
             <h2 className="text-2xl font-bold text-fg mb-3">Ready to make something?</h2>
             <p className="text-fg-muted mb-6">Quotes are free. Describe your project and I&apos;ll get back to you within a day.</p>
             <Link href="/order" className={btnPrimary}>
-              Request a Quote
+              Get a Free Quote
             </Link>
           </div>
         </FadeIn>

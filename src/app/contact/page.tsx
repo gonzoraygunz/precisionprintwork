@@ -55,7 +55,7 @@ export default function Contact() {
               <p className="text-fg-muted">The quote form gets you the fastest answer — and it&apos;s free.</p>
             </div>
             <Link href="/order" className={`${btnPrimary} group relative shrink-0`}>
-              Request a Quote
+              Get a Free Quote
               <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>

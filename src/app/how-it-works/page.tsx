@@ -84,7 +84,7 @@ export default function HowItWorks() {
               <h2 className="text-2xl md:text-3xl font-bold text-fg mb-3">Ready to submit a request?</h2>
               <p className="text-fg-muted mb-8">Takes about 2 minutes. Quotes are free.</p>
               <Link href="/order" className={`${btnPrimary} group`}>
-                Request a Quote
+                Get a Free Quote
                 <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
