@@ -1,6 +1,8 @@
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 import FaqAccordion from "@/components/FaqAccordion";
+import Icon from "@/components/Icon";
+import PageHeader from "@/components/PageHeader";
 
 const steps = [
   {
@@ -32,54 +34,62 @@ const steps = [
 export default function HowItWorks() {
   return (
     <div className="bg-slate-900 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 py-20">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
-            <h1 className="text-4xl font-bold text-white">How It Works</h1>
-            <p className="mt-4 text-slate-400 max-w-xl mx-auto">
-              Simple four-step process — from problem to printed part.
-            </p>
-          </div>
-        </FadeIn>
+      <PageHeader eyebrow="Process" title="How It Works">
+        Simple four-step process — from problem to printed part.
+      </PageHeader>
 
-        {/* Steps */}
-        <div className="space-y-12 mb-20">
-          {steps.map((s, i) => (
-            <FadeIn key={s.n} delay={i * 80}>
-              <div className="flex gap-8 items-start">
-                <div className="text-4xl font-bold text-amber-400 w-16 shrink-0 pt-1">{s.n}</div>
-                <div>
-                  <h2 className="text-xl font-bold text-white mb-2">{s.title}</h2>
-                  <p className="text-slate-400 leading-relaxed mb-3">{s.body}</p>
-                  <p className="text-sm text-cyan-300 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 inline-block">
-                    💡 {s.tip}
-                  </p>
-                </div>
-              </div>
-            </FadeIn>
-          ))}
+      <div className="max-w-4xl mx-auto px-4 py-20">
+        {/* Steps as a vertical timeline */}
+        <div className="relative mb-24">
+          <div
+            className="absolute left-[22px] md:left-7 top-6 md:top-7 bottom-6 md:bottom-7 w-px bg-linear-to-b from-cyan-500/60 via-amber-400/40 to-cyan-500/20"
+            aria-hidden="true"
+          />
+          <ol>
+            {steps.map((s, i) => (
+              <li key={s.n} className="pb-10 md:pb-12 last:pb-0">
+                <FadeIn delay={i * 80} className="relative pl-15 md:pl-24">
+                  <div className="absolute left-0 top-0 w-11 h-11 md:w-14 md:h-14 rounded-full bg-slate-900 border border-amber-400/50 flex items-center justify-center text-sm md:text-lg font-bold text-amber-300 font-mono shadow-[0_0_0_6px_rgb(15_23_42)]">
+                    {s.n}
+                  </div>
+                  <div className="rounded-2xl border border-slate-700/80 bg-slate-800/60 p-5 md:p-7 hover:border-slate-600 transition-colors">
+                    <h2 className="text-xl font-bold text-white mb-3">{s.title}</h2>
+                    <p className="text-slate-400 leading-relaxed mb-4">{s.body}</p>
+                    <p className="flex items-start gap-2.5 text-sm text-cyan-200 bg-cyan-500/5 border border-cyan-500/20 rounded-lg px-4 py-2.5">
+                      <Icon name="bulb" className="w-4 h-4 mt-0.5 shrink-0 text-cyan-400" />
+                      {s.tip}
+                    </p>
+                  </div>
+                </FadeIn>
+              </li>
+            ))}
+          </ol>
         </div>
 
-        {/* FAQ — interactive accordion */}
+        {/* FAQ */}
         <FadeIn>
           <div className="mb-20">
-            <h2 className="text-2xl font-bold text-white mb-8">Common Questions</h2>
+            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest text-center mb-3">FAQ</p>
+            <h2 className="text-3xl font-bold text-white mb-10 text-center">Common Questions</h2>
             <FaqAccordion />
           </div>
         </FadeIn>
 
         {/* CTA */}
         <FadeIn>
-          <div className="circuit-bg bg-slate-800 gradient-border text-white rounded-2xl p-10 text-center">
-            <h2 className="text-2xl font-bold mb-3">Ready to submit a request?</h2>
-            <p className="text-slate-400 mb-6">Takes about 2 minutes. Quotes are free.</p>
-            <Link
-              href="/order"
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 hover:glow-blue transition-all inline-block"
-            >
-              Request a Quote
-            </Link>
+          <div className="relative overflow-hidden rounded-3xl border border-slate-700 bg-slate-800/60 px-6 py-12 text-center">
+            <div className="absolute inset-0 hero-glow pointer-events-none" aria-hidden="true" />
+            <div className="relative">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Ready to submit a request?</h2>
+              <p className="text-slate-400 mb-8">Takes about 2 minutes. Quotes are free.</p>
+              <Link
+                href="/order"
+                className="group inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-500 hover:glow-blue transition-all"
+              >
+                Request a Quote
+                <Icon name="arrow" className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
         </FadeIn>
       </div>

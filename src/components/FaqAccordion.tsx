@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import Icon from "@/components/Icon";
 
 const faqs = [
   {
@@ -23,32 +24,50 @@ const faqs = [
 
 export default function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const baseId = useId();
 
   return (
-    <div className="space-y-3">
-      {faqs.map((f, i) => (
-        <div key={f.q} className="border border-slate-700 rounded-xl overflow-hidden gradient-border">
-          <button
-            onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-700/30 transition-colors"
-          >
-            <span className="font-semibold text-white pr-4">{f.q}</span>
-            <span
-              className="text-cyan-400 text-xl font-light shrink-0 transition-transform duration-300"
-              style={{ transform: openIndex === i ? "rotate(45deg)" : "rotate(0deg)" }}
-            >
-              +
-            </span>
-          </button>
-          {/* Slide open via max-height transition */}
+    <div className="space-y-3 max-w-3xl mx-auto">
+      {faqs.map((f, i) => {
+        const open = openIndex === i;
+        const panelId = `${baseId}-panel-${i}`;
+        return (
           <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
-            style={{ maxHeight: openIndex === i ? "8rem" : "0" }}
+            key={f.q}
+            className={`rounded-xl border transition-colors ${
+              open ? "border-cyan-700/70 bg-slate-800" : "border-slate-700/80 bg-slate-800/50 hover:border-slate-600"
+            }`}
           >
-            <p className="px-5 pb-4 text-slate-400 text-sm leading-relaxed">{f.a}</p>
+            <button
+              onClick={() => setOpenIndex(open ? null : i)}
+              aria-expanded={open}
+              aria-controls={panelId}
+              className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+            >
+              <span className="font-semibold text-white">{f.q}</span>
+              <span
+                className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ring-1 transition-all duration-300 ${
+                  open ? "rotate-45 bg-cyan-500/15 ring-cyan-400/40 text-cyan-300" : "ring-slate-600 text-slate-400"
+                }`}
+              >
+                <Icon name="plus" className="w-4 h-4" />
+              </span>
+            </button>
+            {/* grid-rows trick animates to the content's real height, so long answers never clip */}
+            <div
+              id={panelId}
+              role="region"
+              className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <p className="px-5 pb-5 text-slate-400 text-sm leading-relaxed">{f.a}</p>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

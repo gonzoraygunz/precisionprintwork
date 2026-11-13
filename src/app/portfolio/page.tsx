@@ -1,21 +1,16 @@
 import Link from "next/link";
 import PortfolioGrid from "@/components/PortfolioGrid";
 import FadeIn from "@/components/FadeIn";
+import PageHeader from "@/components/PageHeader";
 import { projects } from "@/lib/projects";
 
 export default function Portfolio() {
   return (
     <div className="bg-slate-900 min-h-screen">
+      <PageHeader eyebrow="Past Work" title="Portfolio">
+        A sample of completed projects. Each one started as a problem — this is what came out the other end.
+      </PageHeader>
       <div className="max-w-5xl mx-auto px-4 py-20">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">Past Work</p>
-            <h1 className="text-4xl font-bold text-white">Portfolio</h1>
-            <p className="mt-4 text-slate-400 max-w-xl mx-auto">
-              A sample of completed projects. Each one started as a problem — this is what came out the other end.
-            </p>
-          </div>
-        </FadeIn>
 
         <PortfolioGrid projects={projects} />
 

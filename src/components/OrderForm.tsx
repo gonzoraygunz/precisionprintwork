@@ -19,12 +19,27 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const inputClass =
-  "w-full border border-slate-600 bg-slate-700 text-white placeholder:text-slate-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500";
+  "w-full border border-slate-600/80 bg-slate-900/60 text-white placeholder:text-slate-500 rounded-lg px-4 py-2.5 text-sm transition-colors hover:border-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30";
+const labelClass = "block text-sm font-medium text-slate-300 mb-1.5";
+const errorClass = "text-red-400 text-xs mt-1.5";
+const legendClass = "w-full text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-1";
+
+function Legend({ children }: { children: React.ReactNode }) {
+  return (
+    <legend className={legendClass}>
+      <span className="flex items-center gap-3">
+        {children}
+        <span className="flex-1 h-px bg-slate-700" aria-hidden="true" />
+      </span>
+    </legend>
+  );
+}
 
 export default function OrderForm() {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [dragging, setDragging] = useState(false);
 
   const {
     register,
@@ -55,7 +70,7 @@ export default function OrderForm() {
 
   if (status === "success") {
     return (
-      <div className="circuit-bg bg-slate-800 border border-cyan-700 rounded-2xl p-10 text-center">
+      <div className="py-8 text-center">
         <div className="mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30">
           <Icon name="check" className="w-7 h-7" />
         </div>
@@ -74,116 +89,196 @@ export default function OrderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* Contact */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Your Info</legend>
+        <Legend>Your Info</Legend>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Name *</label>
-            <input {...register("name")} className={inputClass} placeholder="Your name" />
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
+            <label htmlFor="name" className={labelClass}>Name *</label>
+            <input
+              id="name"
+              {...register("name")}
+              autoComplete="name"
+              className={inputClass}
+              placeholder="Your name"
+              aria-invalid={!!errors.name}
+            />
+            {errors.name && <p className={errorClass}>{errors.name.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email *</label>
-            <input {...register("email")} type="email" className={inputClass} placeholder="you@example.com" />
-            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+            <label htmlFor="email" className={labelClass}>Email *</label>
+            <input
+              id="email"
+              {...register("email")}
+              type="email"
+              autoComplete="email"
+              className={inputClass}
+              placeholder="you@example.com"
+              aria-invalid={!!errors.email}
+            />
+            {errors.email && <p className={errorClass}>{errors.email.message}</p>}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Phone (optional)</label>
-          <input {...register("phone")} type="tel" className={inputClass} placeholder="(555) 000-0000" />
+          <label htmlFor="phone" className={labelClass}>
+            Phone <span className="text-slate-500 font-normal">(optional)</span>
+          </label>
+          <input
+            id="phone"
+            {...register("phone")}
+            type="tel"
+            autoComplete="tel"
+            className={inputClass}
+            placeholder="(555) 000-0000"
+          />
         </div>
       </fieldset>
 
       {/* Part details */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Part Details</legend>
+        <Legend>Part Details</Legend>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
+          <label htmlFor="description" className={labelClass}>
             Describe your part or project *
           </label>
           <textarea
+            id="description"
             {...register("description")}
             rows={5}
-            className={inputClass + " resize-none"}
+            className={inputClass + " resize-y min-h-32"}
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
+            aria-invalid={!!errors.description}
           />
-          {errors.description && <p className="text-red-400 text-xs mt-1">{errors.description.message}</p>}
+          {errors.description && <p className={errorClass}>{errors.description.message}</p>}
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Quantity *</label>
-            <input {...register("quantity")} type="number" min="1" className={inputClass} placeholder="1" />
-            {errors.quantity && <p className="text-red-400 text-xs mt-1">{errors.quantity.message}</p>}
+            <label htmlFor="quantity" className={labelClass}>Quantity *</label>
+            <input
+              id="quantity"
+              {...register("quantity")}
+              type="number"
+              min="1"
+              className={inputClass}
+              placeholder="1"
+              aria-invalid={!!errors.quantity}
+            />
+            {errors.quantity && <p className={errorClass}>{errors.quantity.message}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Material preference</label>
-            <select {...register("material")} className={inputClass}>
+            <label htmlFor="material" className={labelClass}>Material preference</label>
+            <select id="material" {...register("material")} className={inputClass}>
               <option value="">No preference — suggest one</option>
               <option value="PLA">PLA (rigid, general purpose)</option>
               <option value="PETG">PETG (tough, moisture resistant)</option>
               <option value="TPU">TPU (flexible)</option>
               <option value="ASA">ASA (UV/heat resistant)</option>
+              <option value="Resin">Resin (fine detail, minis)</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Timeline</label>
-          <select {...register("timeline")} className={inputClass}>
+          <label htmlFor="timeline" className={labelClass}>Timeline</label>
+          <select id="timeline" {...register("timeline")} className={inputClass}>
             <option value="">No rush — whenever works</option>
             <option value="1-2 weeks">1–2 weeks</option>
             <option value="asap">As soon as possible</option>
           </select>
         </div>
 
-        {/* File upload */}
+        {/* File upload: click, keyboard (focusable input), or drag and drop */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
-            Attach a file (optional)
-          </label>
-          <div className="border border-dashed border-slate-600 bg-slate-800 rounded-lg px-4 py-6 text-center hover:border-cyan-600 transition-colors">
-            <input
-              type="file"
-              id="file"
-              accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
-              className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-            <label htmlFor="file" className="cursor-pointer text-sm text-slate-500 hover:text-slate-300 transition-colors">
-              {file ? (
-                <span className="text-cyan-400 font-medium">📎 {file.name}</span>
-              ) : (
-                <>
+          <p className={labelClass}>
+            Attach a file <span className="text-slate-500 font-normal">(optional)</span>
+          </p>
+          <input
+            type="file"
+            id="file"
+            accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
+            className="peer sr-only"
+            onChange={(e) => {
+              setFile(e.target.files?.[0] ?? null);
+              e.target.value = ""; // allow re-picking the same file after "Remove file"
+            }}
+          />
+          <label
+            htmlFor="file"
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              const dropped = e.dataTransfer.files?.[0];
+              if (dropped) setFile(dropped);
+            }}
+            className={`flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-8 text-center cursor-pointer transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-cyan-500/40 ${
+              dragging
+                ? "border-cyan-400 bg-cyan-500/10"
+                : "border-slate-600 bg-slate-900/40 hover:border-cyan-600 hover:bg-slate-900/60"
+            }`}
+          >
+            {file ? (
+              <>
+                <span className="w-10 h-10 rounded-full flex items-center justify-center bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-400/30">
+                  <Icon name="paperclip" className="w-5 h-5" />
+                </span>
+                <span className="text-cyan-300 font-medium text-sm break-all">{file.name}</span>
+                <span className="text-xs text-slate-500">Click to choose a different file</span>
+              </>
+            ) : (
+              <>
+                <span className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-slate-400 ring-1 ring-slate-600">
+                  <Icon name="upload" className="w-5 h-5" />
+                </span>
+                <span className="text-sm text-slate-400">
                   <span className="text-cyan-400 font-medium">Click to upload</span> or drag and drop
-                  <br />
-                  <span className="text-xs text-slate-500">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
-                </>
-              )}
-            </label>
-          </div>
+                </span>
+                <span className="text-xs text-slate-500">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
+              </>
+            )}
+          </label>
+          {file && (
+            <button
+              type="button"
+              onClick={() => setFile(null)}
+              className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              <Icon name="x" className="w-3.5 h-3.5" />
+              Remove file
+            </button>
+          )}
         </div>
       </fieldset>
 
       {status === "error" && (
-        <p className="text-red-400 text-sm bg-red-950 border border-red-800 rounded-lg px-4 py-3">
+        <p role="alert" className="text-red-300 text-sm bg-red-950/60 border border-red-800 rounded-lg px-4 py-3">
           {errorMsg}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "submitting"}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
-      >
-        {status === "submitting" ? "Sending…" : "Submit Request"}
-      </button>
-
-      <p className="text-center text-xs text-slate-500">
-        Quotes are free. I&apos;ll respond within 1–2 business days.
-      </p>
+      <div className="space-y-3">
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="group w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-500 hover:glow-blue transition-all disabled:opacity-60"
+        >
+          {status === "submitting" ? (
+            "Sending…"
+          ) : (
+            <>
+              Submit Request
+              <Icon name="arrow" className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            </>
+          )}
+        </button>
+        <p className="text-center text-xs text-slate-500">Quotes are free. I&apos;ll respond within 1–2 business days.</p>
+      </div>
     </form>
   );
 }

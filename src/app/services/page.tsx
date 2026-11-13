@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import PageHeader from "@/components/PageHeader";
 import Icon, { type IconName } from "@/components/Icon";
 
 const services: { icon: IconName; title: string; body: string; examples: string[] }[] = [
@@ -24,16 +25,10 @@ const materials = [
 export default function Services() {
   return (
     <div className="bg-slate-900 min-h-screen">
+      <PageHeader eyebrow="What I Offer" title="Services">
+        Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can print it. FDM and resin available.
+      </PageHeader>
       <div className="max-w-5xl mx-auto px-4 py-20">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">What I Offer</p>
-            <h1 className="text-4xl font-bold text-white">Services</h1>
-            <p className="mt-4 text-slate-400 max-w-xl mx-auto">
-              Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can print it. FDM and resin available.
-            </p>
-          </div>
-        </FadeIn>
 
         <div className="grid md:grid-cols-2 gap-6 mb-20">
           {services.map((s, i) => (
