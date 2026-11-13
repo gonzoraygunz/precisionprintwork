@@ -1,20 +1,44 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
+/* ─────────────────────────────────────────────────────────────
+   Precision Printworks design tokens
+   Slate is the bench, cyan is anything you can touch,
+   brass is a measurement, blue is the one action that starts an order.
+   Components use these roles — never raw palette classes.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* Surface & line */
+  --color-surface: #0f172a;          /* slate-900 · page ground */
+  --color-surface-raised: #1e293b;   /* slate-800 · cards, alt sections */
+  --color-surface-overlay: #334155;  /* slate-700 · icon tiles, hover fill */
+  --color-line: #334155;             /* slate-700 · card edges, dividers */
+  --color-line-control: #64748b;     /* slate-500 · input + secondary button borders (3.8:1) */
+
+  /* Text — fg-muted is the floor; nothing dimmer for text */
+  --color-fg: #f1f5f9;               /* slate-100 · 16.3:1 */
+  --color-fg-secondary: #cbd5e1;     /* slate-300 · 11.2:1 */
+  --color-fg-muted: #94a3b8;         /* slate-400 · 5.7:1 on raised */
+
+  /* Signal */
+  --color-accent: #22d3ee;           /* cyan-400 · links, eyebrows, focus */
+  --color-accent-hover: #67e8f9;     /* cyan-300 */
+  --color-accent-line: #0e7490;      /* cyan-700 · hover edge, success */
+  --color-brass: #fbbf24;            /* amber-400 · numbers, specs, materials */
+  --color-action: #2563eb;           /* blue-600 · primary CTA only */
+  --color-action-hover: #1d4ed8;     /* blue-700 */
+  --color-danger: #f87171;           /* red-400 */
+  --color-danger-surface: #450a0a;   /* red-950 */
+  --color-danger-line: #991b1b;      /* red-800 */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-surface);
+  color: var(--color-fg);
 }
 
 /* Subtle repeating circuit-board grid inspired by the logo cube face */
@@ -24,24 +48,33 @@ body {
   background-repeat: repeat;
 }
 
-/* Gradient border: cyan top-left → amber mid → transparent.
-   Mirrors the logo's circuit-trace-meets-nozzle color language.
-   Requires bg-slate-800 on the element (the color is hardcoded below). */
+/* Gradient border: cyan top-left → brass mid → transparent.
+   Paints its own surface-raised fill, so no bg class is needed. */
 @utility gradient-border {
   border: 1px solid transparent;
   background-image:
-    linear-gradient(#1e293b, #1e293b),
+    linear-gradient(var(--color-surface-raised), var(--color-surface-raised)),
     linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, rgba(251, 191, 36, 0.2) 50%, transparent 100%);
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
 
-/* Cyan glow — for card hover and highlighted elements */
-@utility glow-cyan {
+/* Glows mean "this responds to you" — hover/focus only, never at rest. */
+@utility glow-accent {
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), 0 0 40px rgba(34, 211, 238, 0.05);
 }
 
-/* Blue glow — for primary CTA buttons */
-@utility glow-blue {
+@utility glow-action {
   box-shadow: 0 0 20px rgba(37, 99, 235, 0.5), 0 0 40px rgba(37, 99, 235, 0.2);
+}
+
+/* Eyebrow label — mono, caps, accent. One size everywhere. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
 }

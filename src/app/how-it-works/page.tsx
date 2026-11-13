@@ -1,6 +1,9 @@
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 import FaqAccordion from "@/components/FaqAccordion";
+import Icon from "@/components/Icon";
+import SectionHeader from "@/components/SectionHeader";
+import { btnPrimary } from "@/lib/styles";
 
 const steps = [
   {
@@ -31,29 +34,30 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <div className="bg-surface min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-20">
         <FadeIn>
-          <div className="text-center mb-16">
-            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">Process</p>
-            <h1 className="text-4xl font-bold text-white">How It Works</h1>
-            <p className="mt-4 text-slate-400 max-w-xl mx-auto">
-              Simple four-step process — from problem to printed part.
-            </p>
-          </div>
+          <SectionHeader
+            as="h1"
+            eyebrow="Process"
+            title="How It Works"
+            lead="Simple four-step process — from problem to printed part."
+            className="mb-16"
+          />
         </FadeIn>
 
         {/* Steps */}
         <div className="space-y-12 mb-20">
           {steps.map((s, i) => (
             <FadeIn key={s.n} delay={i * 80}>
-              <div className="flex gap-8 items-start">
-                <div className="text-4xl font-bold text-amber-400 w-16 shrink-0 pt-1">{s.n}</div>
+              <div className="flex gap-6 sm:gap-8 items-start">
+                <div className="font-mono text-4xl font-semibold text-brass w-14 sm:w-16 shrink-0 pt-1">{s.n}</div>
                 <div>
-                  <h2 className="text-xl font-bold text-white mb-2">{s.title}</h2>
-                  <p className="text-slate-400 leading-relaxed mb-3">{s.body}</p>
-                  <p className="text-sm text-cyan-300 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 inline-block">
-                    💡 {s.tip}
+                  <h2 className="text-xl font-semibold text-fg mb-2">{s.title}</h2>
+                  <p className="text-fg-muted leading-relaxed mb-3">{s.body}</p>
+                  <p className="text-sm text-fg-secondary bg-surface-raised border border-line rounded-lg px-4 py-2 inline-flex items-start gap-2">
+                    <Icon name="bulb" size={16} className="text-accent shrink-0 mt-0.5" />
+                    {s.tip}
                   </p>
                 </div>
               </div>
@@ -64,20 +68,17 @@ export default function HowItWorks() {
         {/* FAQ — interactive accordion */}
         <FadeIn>
           <div className="mb-20">
-            <h2 className="text-2xl font-bold text-white mb-8">Common Questions</h2>
+            <SectionHeader eyebrow="FAQ" title="Common Questions" align="left" className="mb-8" />
             <FaqAccordion />
           </div>
         </FadeIn>
 
         {/* CTA */}
         <FadeIn>
-          <div className="circuit-bg bg-slate-800 gradient-border text-white rounded-2xl p-10 text-center">
-            <h2 className="text-2xl font-bold mb-3">Ready to submit a request?</h2>
-            <p className="text-slate-400 mb-6">Takes about 2 minutes. Quotes are free.</p>
-            <Link
-              href="/order"
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 hover:glow-blue transition-all inline-block"
-            >
+          <div className="gradient-border rounded-2xl p-10 text-center">
+            <h2 className="text-2xl font-bold text-fg mb-3">Ready to submit a request?</h2>
+            <p className="text-fg-muted mb-6">Takes about 2 minutes. Quotes are free.</p>
+            <Link href="/order" className={btnPrimary}>
               Request a Quote
             </Link>
           </div>

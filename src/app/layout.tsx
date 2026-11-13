@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-900 text-slate-100">
+      <body className="min-h-full flex flex-col bg-surface text-fg">
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
