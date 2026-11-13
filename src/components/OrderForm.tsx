@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { upload } from "@vercel/blob/client";
 import Icon from "@/components/Icon";
-import { btnPrimary, inputClass, textLink } from "@/lib/styles";
+import { btnPrimary, btnSecondary, inputClass, textLink } from "@/lib/styles";
 import {
   BLOB_PREFIX,
   DIRECT_UPLOAD_LIMIT_BYTES,
@@ -66,6 +66,8 @@ export default function OrderForm() {
   const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  // What was sent, echoed back on the success screen so typos are easy to spot.
+  const [sent, setSent] = useState<{ email: string; quantity: string; material: string; file?: string } | null>(null);
 
   const {
     register,
@@ -130,28 +132,58 @@ export default function OrderForm() {
 
       const res = await fetch("/api/order", { method: "POST", body });
       if (!res.ok) throw new Error(await res.text());
+      // Keep the values so "Edit and resend" can reopen the filled-in form.
+      setSent({ email: data.email, quantity: data.quantity, material: data.material || "Suggest one", file: file?.name });
       setStatus("success");
-      reset();
-      setFile(null);
     } catch (e) {
       setStatus("error");
       setErrorMsg(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     }
   }
 
-  if (status === "success") {
+  function startOver() {
+    reset();
+    setFile(null);
+    setSent(null);
+    setStatus("idle");
+  }
+
+  if (status === "success" && sent) {
+    const rows: [string, string][] = [
+      ["Reply to", sent.email],
+      ["Quantity", sent.quantity],
+      ["Material", sent.material],
+      ...(sent.file ? ([["Attachment", sent.file]] as [string, string][]) : []),
+    ];
     return (
-      <div className="py-8 text-center" role="status">
-        <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-surface-overlay text-accent flex items-center justify-center">
-          <Icon name="check" strokeWidth={2} />
+      <div className="py-4 text-center flex flex-col items-center gap-6" role="status">
+        <div className="w-14 h-14 rounded-2xl border border-accent-line bg-accent-line/25 text-accent flex items-center justify-center">
+          <Icon name="check" size={26} strokeWidth={2.25} />
         </div>
-        <h2 className="text-xl font-bold text-fg mb-2">Request received!</h2>
-        <p className="text-fg-muted">
-          I&apos;ll review your request and send a quote to your email within 1–2 business days.
+        <div>
+          <h2 className="text-2xl font-bold text-fg mb-2">Request received</h2>
+          <p className="text-fg-muted">
+            Your quote will be emailed within <span className="font-mono text-brass">1–2 business days</span>.
+          </p>
+        </div>
+        <dl className="w-full max-w-md rounded-xl border border-line bg-surface text-sm text-left">
+          {rows.map(([k, v], i) => (
+            <div key={k} className={`flex justify-between gap-4 px-4 py-3 ${i ? "border-t border-line" : ""}`}>
+              <dt className="text-fg-muted">{k}</dt>
+              <dd className={`font-mono text-brass text-right [overflow-wrap:anywhere] ${k === "Material" ? "uppercase" : ""}`}>{v}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="text-sm text-fg-muted">
+          Wrong email?{" "}
+          <button type="button" onClick={() => setStatus("idle")} className={`${textLink} font-semibold`}>
+            Edit and resend
+          </button>
         </p>
-        <button onClick={() => setStatus("idle")} className={`${textLink} mt-6 text-sm font-medium`}>
-          Submit another request
-        </button>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link href="/portfolio" className={btnSecondary}>See past work</Link>
+          <button type="button" onClick={startOver} className={btnSecondary}>Submit another</button>
+        </div>
       </div>
     );
   }
@@ -314,21 +346,35 @@ export default function OrderForm() {
       </fieldset>
 
       {status === "error" && (
-        <p role="alert" className="text-danger text-sm bg-danger-surface border border-danger-line rounded-lg px-4 py-3">
-          {errorMsg}
-        </p>
+        <div role="alert" className="flex gap-3 items-start rounded-xl border border-danger-line bg-danger-surface px-4 py-3.5 text-sm leading-relaxed">
+          <Icon name="close" size={18} strokeWidth={2} className="text-danger shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-fg">Your request didn&apos;t send.</p>
+            <p className="text-fg-secondary">
+              Your details{file ? " and file" : ""} are still here. Try again, or email them to{" "}
+              <a href="mailto:michael@precisionprintwork.com" className="font-semibold text-fg underline underline-offset-2 [overflow-wrap:anywhere]">
+                michael@precisionprintwork.com
+              </a>
+              .
+            </p>
+            {errorMsg && errorMsg.length < 200 && <p className="mt-1 font-mono text-xs text-danger">{errorMsg}</p>}
+          </div>
+        </div>
       )}
 
+      {/* Pinned to the bottom of the screen on phones while the form is in view */}
+      <div className="sticky bottom-0 z-10 -mx-6 px-6 py-3 bg-surface-raised/95 backdrop-blur-md border-t border-line md:static md:m-0 md:p-0 md:bg-transparent md:backdrop-blur-none md:border-0">
       <button type="submit" disabled={status === "submitting"} className={`${btnPrimary} group w-full`}>
         {status === "submitting" ? (
           uploadPct !== null ? `Uploading file… ${uploadPct}%` : "Sending…"
         ) : (
           <>
-            Submit Request
+            {status === "error" ? "Try Again" : "Submit Request"}
             <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
           </>
         )}
       </button>
+      </div>
 
       <p className="text-center text-xs text-fg-muted">
         Quotes are free. I&apos;ll respond within 1–2 business days.
