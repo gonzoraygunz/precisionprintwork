@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Icon from "@/components/Icon";
+import { btnPrimary, inputClass, textLink } from "@/lib/styles";
 
 const schema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -17,8 +19,17 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const inputClass =
-  "w-full border border-slate-600 bg-slate-700 text-white placeholder:text-slate-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500";
+const labelClass = "block text-sm font-medium text-fg-secondary mb-1.5";
+const legendClass = "font-mono text-[0.8125rem] font-medium uppercase tracking-[0.14em] text-fg-muted";
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="text-danger text-xs mt-1.5">
+      {message}
+    </p>
+  );
+}
 
 export default function OrderForm() {
   const [file, setFile] = useState<File | null>(null);
@@ -31,6 +42,12 @@ export default function OrderForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  // Wires a field's error state to its input for screen readers.
+  const a11y = (field: keyof FormData) =>
+    errors[field]
+      ? { "aria-invalid": true as const, "aria-describedby": `${field}-error` }
+      : {};
 
   async function onSubmit(data: FormData) {
     setStatus("submitting");
@@ -54,16 +71,15 @@ export default function OrderForm() {
 
   if (status === "success") {
     return (
-      <div className="circuit-bg bg-slate-800 border border-cyan-700 rounded-2xl p-10 text-center">
-        <div className="text-4xl mb-4">✅</div>
-        <h2 className="text-xl font-bold text-white mb-2">Request received!</h2>
-        <p className="text-slate-400">
+      <div className="circuit-bg bg-surface-raised border border-accent-line rounded-2xl p-10 text-center" role="status">
+        <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-surface-overlay text-accent flex items-center justify-center">
+          <Icon name="check" strokeWidth={2} />
+        </div>
+        <h2 className="text-xl font-bold text-fg mb-2">Request received!</h2>
+        <p className="text-fg-muted">
           I&apos;ll review your request and send a quote to your email within 1–2 business days.
         </p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="mt-6 text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
-        >
+        <button onClick={() => setStatus("idle")} className={`${textLink} mt-6 text-sm font-medium`}>
           Submit another request
         </button>
       </div>
@@ -71,53 +87,55 @@ export default function OrderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Contact */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Your Info</legend>
+        <legend className={`${legendClass} mb-4`}>Your Info</legend>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Name *</label>
-            <input {...register("name")} className={inputClass} placeholder="Your name" />
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
+            <label htmlFor="name" className={labelClass}>Name *</label>
+            <input id="name" {...register("name")} {...a11y("name")} autoComplete="name" className={inputClass} placeholder="Your name" />
+            <FieldError id="name-error" message={errors.name?.message} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email *</label>
-            <input {...register("email")} type="email" className={inputClass} placeholder="you@example.com" />
-            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+            <label htmlFor="email" className={labelClass}>Email *</label>
+            <input id="email" {...register("email")} {...a11y("email")} type="email" autoComplete="email" className={inputClass} placeholder="you@example.com" />
+            <FieldError id="email-error" message={errors.email?.message} />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Phone (optional)</label>
-          <input {...register("phone")} type="tel" className={inputClass} placeholder="(555) 000-0000" />
+          <label htmlFor="phone" className={labelClass}>Phone (optional)</label>
+          <input id="phone" {...register("phone")} type="tel" autoComplete="tel" className={inputClass} placeholder="(555) 000-0000" />
         </div>
       </fieldset>
 
       {/* Part details */}
       <fieldset className="space-y-4">
-        <legend className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Part Details</legend>
+        <legend className={`${legendClass} mb-4`}>Part Details</legend>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
+          <label htmlFor="description" className={labelClass}>
             Describe your part or project *
           </label>
           <textarea
+            id="description"
             {...register("description")}
+            {...a11y("description")}
             rows={5}
             className={inputClass + " resize-none"}
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
           />
-          {errors.description && <p className="text-red-400 text-xs mt-1">{errors.description.message}</p>}
+          <FieldError id="description-error" message={errors.description?.message} />
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Quantity *</label>
-            <input {...register("quantity")} type="number" min="1" className={inputClass} placeholder="1" />
-            {errors.quantity && <p className="text-red-400 text-xs mt-1">{errors.quantity.message}</p>}
+            <label htmlFor="quantity" className={labelClass}>Quantity *</label>
+            <input id="quantity" {...register("quantity")} {...a11y("quantity")} type="number" min="1" className={inputClass} placeholder="1" />
+            <FieldError id="quantity-error" message={errors.quantity?.message} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Material preference</label>
-            <select {...register("material")} className={inputClass}>
+            <label htmlFor="material" className={labelClass}>Material preference</label>
+            <select id="material" {...register("material")} className={inputClass}>
               <option value="">No preference — suggest one</option>
               <option value="PLA">PLA (rigid, general purpose)</option>
               <option value="PETG">PETG (tough, moisture resistant)</option>
@@ -128,8 +146,8 @@ export default function OrderForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Timeline</label>
-          <select {...register("timeline")} className={inputClass}>
+          <label htmlFor="timeline" className={labelClass}>Timeline</label>
+          <select id="timeline" {...register("timeline")} className={inputClass}>
             <option value="">No rush — whenever works</option>
             <option value="1-2 weeks">1–2 weeks</option>
             <option value="asap">As soon as possible</option>
@@ -138,25 +156,31 @@ export default function OrderForm() {
 
         {/* File upload */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
-            Attach a file (optional)
-          </label>
-          <div className="border border-dashed border-slate-600 bg-slate-800 rounded-lg px-4 py-6 text-center hover:border-cyan-600 transition-colors">
+          <p className={labelClass}>Attach a file (optional)</p>
+          <div className="relative border border-dashed border-line-control bg-surface-raised rounded-xl px-4 py-6 hover:border-accent focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-colors">
             <input
               type="file"
               id="file"
               accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
-              className="hidden"
+              className="sr-only"
+              aria-describedby="file-hint"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
-            <label htmlFor="file" className="cursor-pointer text-sm text-slate-500 hover:text-slate-300 transition-colors">
+            <label htmlFor="file" className="cursor-pointer flex items-center justify-center gap-3 text-sm text-fg-secondary">
               {file ? (
-                <span className="text-cyan-400 font-medium">📎 {file.name}</span>
+                <>
+                  <Icon name="paperclip" size={20} className="text-accent shrink-0" />
+                  <span className="text-accent font-medium break-all">{file.name}</span>
+                </>
               ) : (
                 <>
-                  <span className="text-cyan-400 font-medium">Click to upload</span> or drag and drop
-                  <br />
-                  <span className="text-xs text-slate-500">STL, OBJ, STEP, image, or PDF — max 25 MB</span>
+                  <Icon name="upload" className="text-accent shrink-0" />
+                  <span>
+                    <span className="text-accent font-semibold">Click to upload</span> or drag and drop
+                    <span id="file-hint" className="block font-mono text-xs text-fg-muted mt-1">
+                      STL · OBJ · STEP · image · PDF — max 25 MB
+                    </span>
+                  </span>
                 </>
               )}
             </label>
@@ -165,20 +189,16 @@ export default function OrderForm() {
       </fieldset>
 
       {status === "error" && (
-        <p className="text-red-400 text-sm bg-red-950 border border-red-800 rounded-lg px-4 py-3">
+        <p role="alert" className="text-danger text-sm bg-danger-surface border border-danger-line rounded-lg px-4 py-3">
           {errorMsg}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "submitting"}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
-      >
+      <button type="submit" disabled={status === "submitting"} className={`${btnPrimary} w-full`}>
         {status === "submitting" ? "Sending…" : "Submit Request"}
       </button>
 
-      <p className="text-center text-xs text-slate-500">
+      <p className="text-center text-xs text-fg-muted">
         Quotes are free. I&apos;ll respond within 1–2 business days.
       </p>
     </form>

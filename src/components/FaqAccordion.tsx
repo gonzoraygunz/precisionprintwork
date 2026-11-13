@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Icon from "@/components/Icon";
 
 const faqs = [
   {
@@ -26,29 +27,44 @@ export default function FaqAccordion() {
 
   return (
     <div className="space-y-3">
-      {faqs.map((f, i) => (
-        <div key={f.q} className="border border-slate-700 rounded-xl overflow-hidden gradient-border">
-          <button
-            onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-700/30 transition-colors"
-          >
-            <span className="font-semibold text-white pr-4">{f.q}</span>
-            <span
-              className="text-cyan-400 text-xl font-light shrink-0 transition-transform duration-300"
-              style={{ transform: openIndex === i ? "rotate(45deg)" : "rotate(0deg)" }}
+      {faqs.map((f, i) => {
+        const open = openIndex === i;
+        return (
+          <div key={f.q} className="gradient-border rounded-xl overflow-hidden">
+            <h3>
+              <button
+                id={`faq-q-${i}`}
+                onClick={() => setOpenIndex(open ? null : i)}
+                aria-expanded={open}
+                aria-controls={`faq-a-${i}`}
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-surface-overlay/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+              >
+                <span className="font-semibold text-fg pr-4">{f.q}</span>
+                <Icon
+                  name="plus"
+                  size={20}
+                  strokeWidth={2}
+                  className={`text-accent shrink-0 transition-transform duration-300 ${open ? "rotate-45" : ""}`}
+                />
+              </button>
+            </h3>
+            {/* Slide open via grid-rows transition — no fixed max-height to clip long answers */}
+            <div
+              id={`faq-a-${i}`}
+              role="region"
+              aria-labelledby={`faq-q-${i}`}
+              inert={!open}
+              className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              }`}
             >
-              +
-            </span>
-          </button>
-          {/* Slide open via max-height transition */}
-          <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
-            style={{ maxHeight: openIndex === i ? "8rem" : "0" }}
-          >
-            <p className="px-5 pb-4 text-slate-400 text-sm leading-relaxed">{f.a}</p>
+              <div className="overflow-hidden">
+                <p className="px-5 pb-4 text-fg-muted text-sm leading-relaxed">{f.a}</p>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
