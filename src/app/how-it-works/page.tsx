@@ -79,7 +79,7 @@ export default function HowItWorks() {
             <h2 className="text-2xl font-bold text-fg mb-3">Ready to submit a request?</h2>
             <p className="text-fg-muted mb-6">Takes about 2 minutes. Quotes are free.</p>
             <Link href="/order" className={btnPrimary}>
-              Request a Quote
+              Get a Free Quote
             </Link>
           </div>
         </FadeIn>

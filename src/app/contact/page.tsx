@@ -48,7 +48,7 @@ export default function Contact() {
 
         <div className="mt-10 text-center">
           <Link href="/order" className={btnPrimary}>
-            Request a Quote
+            Get a Free Quote
           </Link>
         </div>
       </div>

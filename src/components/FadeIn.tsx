@@ -32,11 +32,10 @@ export default function FadeIn({ children, className = "", delay = 0 }: FadeInPr
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(20px)",
-      }}
+      // Reduced motion: content is shown immediately, no slide.
+      className={`transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:transition-none ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+      } ${className}`}
     >
       {children}
     </div>

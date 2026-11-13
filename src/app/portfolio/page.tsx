@@ -3,33 +3,7 @@ import PortfolioGrid from "@/components/PortfolioGrid";
 import FadeIn from "@/components/FadeIn";
 import SectionHeader from "@/components/SectionHeader";
 import { btnPrimary } from "@/lib/styles";
-
-const projects = [
-  {
-    src: "/portfolio/tray-green.png",
-    alt: "Perforated storage tray — green PLA",
-    title: "Custom 510 Cartridge Tray",
-    description: "Custom grid tray printed in green PLA. Available in any color.",
-  },
-  {
-    src: "/portfolio/tray-black.png",
-    alt: "Perforated storage tray — black PETG",
-    title: "Custom 510 Cartridge Tray",
-    description: "Same design in black PETG for a more industrial look.",
-  },
-  {
-    src: "/portfolio/tray-white.png",
-    alt: "Perforated storage tray — white PLA",
-    title: "Custom 510 Cartridge Tray",
-    description: "White PLA version — clean finish for lab or workshop use.",
-  },
-  {
-    src: "/portfolio/pipe-clamps.png",
-    alt: "Machine vision alignment LED holder",
-    title: "Machine Vision LED Holder",
-    description: "Functional mounting brackets designed to fit a specific pipe diameter.",
-  },
-];
+import { projects } from "@/lib/projects";
 
 export default function Portfolio() {
   return (
@@ -54,7 +28,7 @@ export default function Portfolio() {
               Every item here started with a request. Submit yours and get a free quote.
             </p>
             <Link href="/order" className={btnPrimary}>
-              Start a Request
+              Get a Free Quote
             </Link>
           </div>
         </FadeIn>
