@@ -61,7 +61,6 @@ const paths = {
   close: <path d="M6 6l12 12M18 6 6 18" />,
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   plus: <path d="M12 5v14M5 12h14" />,
-  layers: <path d="m12 3 9 4.5-9 4.5-9-4.5zM3 12l9 4.5 9-4.5M3 16.5 12 21l9-4.5" />,
   mail: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
