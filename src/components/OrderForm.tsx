@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,7 +29,26 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const labelClass = "block text-sm font-medium text-fg-secondary mb-1.5";
-const legendClass = "font-mono text-[0.8125rem] font-medium uppercase tracking-[0.14em] text-fg-muted";
+const legendClass = "mb-5 flex items-center gap-3 text-lg font-semibold text-fg";
+
+/** Numbered section title: brass step badge + label. */
+function Legend({ n, children }: { n: string; children: React.ReactNode }) {
+  return (
+    <legend className={legendClass}>
+      <span className="font-mono text-[0.8125rem] text-brass border border-brass/35 rounded-md px-2 py-0.5">{n}</span>
+      {children}
+    </legend>
+  );
+}
+
+const materials = [
+  { value: "", label: "Suggest one" },
+  { value: "PLA", label: "PLA" },
+  { value: "PETG", label: "PETG" },
+  { value: "TPU", label: "TPU" },
+  { value: "ASA", label: "ASA" },
+  { value: "Resin", label: "Resin" },
+];
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -52,7 +72,7 @@ export default function OrderForm() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  } = useForm<FormData>({ resolver: zodResolver(schema), defaultValues: { material: "" } });
 
   // Wires a field's error state to its input for screen readers.
   const a11y = (field: keyof FormData) =>
@@ -137,10 +157,10 @@ export default function OrderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10" noValidate>
       {/* Contact */}
       <fieldset className="space-y-4">
-        <legend className={`${legendClass} mb-4`}>Your Info</legend>
+        <Legend n="01">About you</Legend>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="name" className={labelClass}>Name *</label>
@@ -160,8 +180,8 @@ export default function OrderForm() {
       </fieldset>
 
       {/* Part details */}
-      <fieldset className="space-y-4">
-        <legend className={`${legendClass} mb-4`}>Part Details</legend>
+      <fieldset className="space-y-4 border-t border-line pt-8">
+        <Legend n="02">The part</Legend>
         <div>
           <label htmlFor="description" className={labelClass}>
             Describe your part or project *
@@ -184,30 +204,46 @@ export default function OrderForm() {
             <FieldError id="quantity-error" message={errors.quantity?.message} />
           </div>
           <div>
-            <label htmlFor="material" className={labelClass}>Material preference</label>
-            <select id="material" {...register("material")} className={inputClass}>
-              <option value="">No preference — suggest one</option>
-              <option value="PLA">PLA (rigid, general purpose)</option>
-              <option value="PETG">PETG (tough, moisture resistant)</option>
-              <option value="TPU">TPU (flexible)</option>
-              <option value="ASA">ASA (UV/heat resistant)</option>
-              <option value="Resin">Resin (fine detail, minis)</option>
+            <label htmlFor="timeline" className={labelClass}>Timeline</label>
+            <select id="timeline" {...register("timeline")} className={inputClass}>
+              <option value="">No rush — whenever works</option>
+              <option value="1-2 weeks">1–2 weeks</option>
+              <option value="asap">As soon as possible</option>
             </select>
           </div>
         </div>
 
-        <div>
-          <label htmlFor="timeline" className={labelClass}>Timeline</label>
-          <select id="timeline" {...register("timeline")} className={inputClass}>
-            <option value="">No rush — whenever works</option>
-            <option value="1-2 weeks">1–2 weeks</option>
-            <option value="asap">As soon as possible</option>
-          </select>
-        </div>
+        <fieldset>
+          <legend className={labelClass}>Material preference</legend>
+          <div className="flex flex-wrap gap-2">
+            {materials.map((m) => (
+              <label key={m.label} className="cursor-pointer">
+                <input
+                  type="radio"
+                  value={m.value}
+                  {...register("material")}
+                  className="peer sr-only"
+                />
+                <span className="inline-flex items-center h-11 px-4 rounded-full border border-line bg-surface font-mono text-[0.8125rem] uppercase text-fg-secondary transition-colors hover:border-line-control peer-checked:border-brass peer-checked:text-brass peer-checked:bg-brass/10 peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
+                  {m.label}
+                </span>
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-fg-muted">
+            Not sure? See the{" "}
+            <Link href="/services#materials" className={textLink}>material comparison</Link>.
+          </p>
+        </fieldset>
+      </fieldset>
 
+      <fieldset className="space-y-4 border-t border-line pt-8">
+        <Legend n="03">
+          Reference <span className="text-sm font-normal text-fg-muted">optional</span>
+        </Legend>
         {/* File upload: click, keyboard (focusable sr-only input), or drag and drop */}
         <div>
-          <p className={labelClass}>Attach a file (optional)</p>
+          <p className="sr-only">Attach a file</p>
           <div
             onDragOver={(e) => {
               e.preventDefault();
