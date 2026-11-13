@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-
-type Project = {
-  src: string;
-  alt: string;
-  title: string;
-  description: string;
-};
+import type { Project } from "@/lib/projects";
 
 export default function PortfolioGrid({ projects }: { projects: Project[] }) {
   const [selected, setSelected] = useState<Project | null>(null);
@@ -35,7 +29,7 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
             onClick={() => setSelected(project)}
             className="rounded-xl overflow-hidden border border-slate-700 bg-slate-800 hover:border-cyan-700 hover:glow-cyan transition-all duration-300 text-left group cursor-zoom-in"
           >
-            <div className="aspect-square relative bg-slate-700">
+            <div className="aspect-square relative bg-[#e7e7e7]">
               <Image
                 src={project.src}
                 alt={project.alt}
@@ -64,7 +58,7 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
             className="relative max-w-xl w-full bg-slate-800 gradient-border rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="aspect-square relative">
+            <div className="aspect-square relative bg-[#e7e7e7]">
               <Image
                 src={selected.src}
                 alt={selected.alt}

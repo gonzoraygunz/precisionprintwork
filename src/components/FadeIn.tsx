@@ -15,18 +15,22 @@ export default function FadeIn({ children, className = "", delay = 0 }: FadeInPr
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Reduced-motion users: globals.css collapses the transition, so content just appears.
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          const t = setTimeout(() => setVisible(true), delay);
+          timer = setTimeout(() => setVisible(true), delay);
           obs.disconnect();
-          return () => clearTimeout(t);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      obs.disconnect();
+      clearTimeout(timer);
+    };
   }, [delay]);
 
   return (

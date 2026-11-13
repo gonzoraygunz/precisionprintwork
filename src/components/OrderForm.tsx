@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,7 +56,9 @@ export default function OrderForm() {
   if (status === "success") {
     return (
       <div className="circuit-bg bg-slate-800 border border-cyan-700 rounded-2xl p-10 text-center">
-        <div className="text-4xl mb-4">✅</div>
+        <div className="mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30">
+          <Icon name="check" className="w-7 h-7" />
+        </div>
         <h2 className="text-xl font-bold text-white mb-2">Request received!</h2>
         <p className="text-slate-400">
           I&apos;ll review your request and send a quote to your email within 1–2 business days.
