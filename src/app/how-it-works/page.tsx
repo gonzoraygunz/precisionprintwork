@@ -4,43 +4,79 @@ import FaqAccordion from "@/components/FaqAccordion";
 import Icon from "@/components/Icon";
 import PageHeader from "@/components/PageHeader";
 import SectionHeader from "@/components/SectionHeader";
-import { btnPrimary, card } from "@/lib/styles";
+import { btnPrimary, card, textLink } from "@/lib/styles";
 
 const steps = [
   {
     n: "01",
+    short: "Request",
     title: "Submit a Request",
-    body: "Fill out the quote form. Describe your part as best you can — dimensions, function, material preference, and how many you need. Attach a photo, sketch, or STL file if you have one. Don't worry if you don't have a file; a clear description is enough to start.",
+    duration: "~2 min",
+    durationNote: "to fill out the form",
+    you: "Describe the part — dimensions, function, material, and how many. Attach a photo, sketch, or STL if you have one.",
+    me: "Nothing yet. A clear description is enough to start; no file needed.",
     tip: "The more detail you provide, the more accurate the quote.",
   },
   {
     n: "02",
+    short: "Quote",
     title: "Review & Quote",
-    body: "I review your request, determine the best approach and material, estimate print time and cost, and send you a quote via email — usually within 1–2 business days. If I have questions I'll reach out before quoting.",
+    duration: "1–2 days",
+    durationNote: "sent by email",
+    you: "Answer any questions I send. Otherwise, watch for the quote email.",
+    me: "Pick the best approach and material, estimate print time and cost, and send the quote.",
     tip: "Complex or multi-part designs may take longer to scope.",
   },
   {
     n: "03",
+    short: "Pay",
     title: "Approve & Pay",
-    body: "If the quote works for you, simply pay via the secure Stripe link in the email. No account required — card or bank transfer accepted. Payment locks in the order and moves it to the print queue.",
+    duration: "7 days",
+    durationNote: "quote stays valid",
+    you: "Pay through the secure Stripe link in the email. Card or bank transfer, no account required.",
+    me: "Lock in the order and move it to the print queue.",
     tip: "Quotes are valid for 7 days.",
   },
   {
     n: "04",
+    short: "Ship",
     title: "Print, Inspect & Ship",
-    body: "Your part is printed, measured against spec, and any support material is removed and cleaned up. Then it's packaged and shipped to you with a tracking number. Small parts usually ship within 3–5 business days of payment.",
+    duration: "3–5 days",
+    durationNote: "for small parts",
+    you: "Watch for the tracking number.",
+    me: "Print, measure against spec, clean up supports, package, and ship.",
     tip: "Larger or complex parts may take longer — I'll set expectations in the quote.",
   },
 ];
+
+const roleLabel = "font-mono text-[0.6875rem] tracking-[0.14em] uppercase text-accent";
 
 export default function HowItWorks() {
   return (
     <div className="bg-surface min-h-screen">
       <PageHeader eyebrow="Process" title="How It Works">
-        Simple four-step process — from problem to printed part.
+        Simple four-step process — from problem to printed part. No account, no CAD file required.
       </PageHeader>
 
       <div className="max-w-4xl mx-auto px-4 py-20">
+        {/* At a glance */}
+        <FadeIn>
+          <dl className={`${card} grid grid-cols-2 md:grid-cols-4 overflow-hidden mb-20`}>
+            {steps.map((s, i) => (
+              <div
+                key={s.n}
+                className={`px-5 py-4 flex flex-col gap-1 border-line ${i % 2 ? "border-l" : ""} ${i > 1 ? "border-t md:border-t-0" : ""} ${i === 2 ? "md:border-l" : ""}`}
+              >
+                <dt className="font-mono text-[0.6875rem] tracking-[0.14em] uppercase text-fg-muted">
+                  {s.n} · {s.short}
+                </dt>
+                <dd className="font-mono text-lg font-semibold uppercase text-brass">{s.duration}</dd>
+                <dd className="text-sm text-fg-secondary">{s.durationNote}</dd>
+              </div>
+            ))}
+          </dl>
+        </FadeIn>
+
         {/* Steps as a vertical timeline */}
         <div className="relative mb-24">
           <div
@@ -55,8 +91,22 @@ export default function HowItWorks() {
                     {s.n}
                   </div>
                   <div className={`${card} p-5 md:p-7`}>
-                    <h2 className="text-xl font-semibold text-fg mb-3">{s.title}</h2>
-                    <p className="text-fg-muted leading-relaxed mb-4">{s.body}</p>
+                    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mb-4">
+                      <h2 className="text-xl font-semibold text-fg">{s.title}</h2>
+                      <span className="font-mono text-xs uppercase tracking-[0.1em] text-brass border border-brass/35 rounded-full px-2.5 py-1 whitespace-nowrap">
+                        {s.duration}
+                      </span>
+                    </div>
+                    <dl className="grid sm:grid-cols-2 gap-4 mb-4">
+                      <div className="border-t border-line pt-3">
+                        <dt className={`${roleLabel} mb-1.5`}>You</dt>
+                        <dd className="text-sm text-fg-muted leading-relaxed">{s.you}</dd>
+                      </div>
+                      <div className="border-t border-line pt-3">
+                        <dt className={`${roleLabel} mb-1.5`}>Me</dt>
+                        <dd className="text-sm text-fg-muted leading-relaxed">{s.me}</dd>
+                      </div>
+                    </dl>
                     <p className="flex items-start gap-2.5 text-sm text-fg-secondary bg-surface border border-line rounded-lg px-4 py-2.5">
                       <Icon name="bulb" size={16} className="text-accent shrink-0 mt-0.5" />
                       {s.tip}
@@ -68,10 +118,19 @@ export default function HowItWorks() {
           </ol>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ: intro left, accordion right */}
         <FadeIn>
-          <div className="mb-20 max-w-3xl mx-auto">
-            <SectionHeader eyebrow="FAQ" title="Common Questions" className="mb-10" />
+          <div className="mb-20 grid md:grid-cols-[16rem_1fr] gap-8 md:gap-12 items-start">
+            <div>
+              <SectionHeader eyebrow="FAQ" title="Common Questions" align="left" />
+              <p className="mt-4 text-sm text-fg-muted leading-relaxed">
+                Something else?{" "}
+                <a href="mailto:michael@precisionprintwork.com" className={`${textLink} font-semibold`}>
+                  Email me
+                </a>{" "}
+                — usually answered within a business day.
+              </p>
+            </div>
             <FaqAccordion />
           </div>
         </FadeIn>

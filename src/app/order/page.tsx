@@ -8,6 +8,7 @@ const next = [
   { n: "01", text: "I review your request and reach out if anything needs clarifying." },
   { n: "02", text: "You get a quote by email within 1–2 business days." },
   { n: "03", text: "Approve and pay via the secure link — then it goes to the printer." },
+  { n: "04", text: "Printed, inspected against spec, and shipped with tracking." },
 ];
 
 export default function Order() {
@@ -57,7 +58,17 @@ export default function Order() {
               <Icon name="mail" size={16} className="shrink-0 text-accent" />
               michael@precisionprintwork.com
             </a>
-            <p className="mt-4 text-sm">
+            <dl className="mt-5 border-t border-line text-sm">
+              <div className="flex justify-between gap-4 py-3 border-b border-line">
+                <dt className="text-fg-muted">Response</dt>
+                <dd className="font-mono text-brass">1 business day</dd>
+              </div>
+              <div className="flex justify-between gap-4 py-3">
+                <dt className="text-fg-muted">Ships from</dt>
+                <dd className="font-mono text-brass">United States</dd>
+              </div>
+            </dl>
+            <p className="mt-2 text-sm">
               <Link href="/how-it-works" className={textLink}>
                 Read the FAQ →
               </Link>
