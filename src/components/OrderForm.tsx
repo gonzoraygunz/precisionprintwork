@@ -5,6 +5,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { upload } from "@vercel/blob/client";
+import {
+  BLOB_PREFIX,
+  DIRECT_UPLOAD_LIMIT_BYTES,
+  MAX_UPLOAD_BYTES,
+  formatBytes,
+  hasAllowedExtension,
+} from "@/lib/upload";
 
 const schema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -40,6 +48,22 @@ export default function OrderForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [fileError, setFileError] = useState("");
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
+
+  function pickFile(f: File | null) {
+    setFileError("");
+    if (!f) return setFile(null);
+    if (!hasAllowedExtension(f.name)) {
+      setFileError("Please attach an STL, OBJ, STEP, image, or PDF file.");
+      return;
+    }
+    if (f.size > MAX_UPLOAD_BYTES) {
+      setFileError(`That file is ${formatBytes(f.size)}. The limit is 25 MB — email larger files instead.`);
+      return;
+    }
+    setFile(f);
+  }
 
   const {
     register,
@@ -54,9 +78,33 @@ export default function OrderForm() {
 
     const body = new FormData();
     Object.entries(data).forEach(([k, v]) => body.append(k, v ?? ""));
-    if (file) body.append("file", file);
 
     try {
+      if (file && file.size > DIRECT_UPLOAD_LIMIT_BYTES) {
+        // Too big for a function request body: send it to private Blob storage first.
+        setUploadPct(0);
+        let blob;
+        try {
+          blob = await upload(BLOB_PREFIX + file.name, file, {
+            access: "private",
+            handleUploadUrl: "/api/upload",
+            multipart: true,
+            onUploadProgress: ({ percentage }) => setUploadPct(Math.round(percentage)),
+          });
+        } catch (e) {
+          console.error("Blob upload failed:", e);
+          throw new Error(
+            "Your file couldn't be uploaded. Try again, attach a smaller file (under 4 MB), or email it to michael@precisionprintwork.com."
+          );
+        } finally {
+          setUploadPct(null);
+        }
+        body.append("fileUrl", blob.url);
+        body.append("fileName", file.name);
+      } else if (file) {
+        body.append("file", file);
+      }
+
       const res = await fetch("/api/order", { method: "POST", body });
       if (!res.ok) throw new Error(await res.text());
       setStatus("success");
@@ -200,7 +248,7 @@ export default function OrderForm() {
             accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
             className="peer sr-only"
             onChange={(e) => {
-              setFile(e.target.files?.[0] ?? null);
+              pickFile(e.target.files?.[0] ?? null);
               e.target.value = ""; // allow re-picking the same file after "Remove file"
             }}
           />
@@ -215,7 +263,7 @@ export default function OrderForm() {
               e.preventDefault();
               setDragging(false);
               const dropped = e.dataTransfer.files?.[0];
-              if (dropped) setFile(dropped);
+              if (dropped) pickFile(dropped);
             }}
             className={`flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-8 text-center cursor-pointer transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-cyan-500/40 ${
               dragging
@@ -229,7 +277,9 @@ export default function OrderForm() {
                   <Icon name="paperclip" className="w-5 h-5" />
                 </span>
                 <span className="text-cyan-300 font-medium text-sm break-all">{file.name}</span>
-                <span className="text-xs text-slate-500">Click to choose a different file</span>
+                <span className="text-xs text-slate-500">
+                  {formatBytes(file.size)} · Click to choose a different file
+                </span>
               </>
             ) : (
               <>
@@ -246,12 +296,17 @@ export default function OrderForm() {
           {file && (
             <button
               type="button"
-              onClick={() => setFile(null)}
+              onClick={() => pickFile(null)}
               className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
             >
               <Icon name="x" className="w-3.5 h-3.5" />
               Remove file
             </button>
+          )}
+          {fileError && (
+            <p role="alert" className={errorClass}>
+              {fileError}
+            </p>
           )}
         </div>
       </fieldset>
@@ -269,7 +324,7 @@ export default function OrderForm() {
           className="group w-full inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-500 hover:glow-blue transition-all disabled:opacity-60"
         >
           {status === "submitting" ? (
-            "Sending…"
+            uploadPct !== null ? `Uploading file… ${uploadPct}%` : "Sending…"
           ) : (
             <>
               Submit Request
