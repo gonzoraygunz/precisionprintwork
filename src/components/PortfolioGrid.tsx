@@ -30,7 +30,7 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
             onClick={() => setSelected(project)}
             className="rounded-2xl overflow-hidden border border-line bg-surface-raised hover:border-accent-line hover:glow-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-all duration-300 text-left group cursor-zoom-in"
           >
-            <div className="aspect-square relative bg-surface-overlay">
+            <div className="aspect-square relative bg-[#e7e7e7]">
               <Image
                 src={project.src}
                 alt={project.alt}
@@ -63,7 +63,7 @@ export default function PortfolioGrid({ projects }: { projects: Project[] }) {
             className="relative max-w-xl w-full gradient-border rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="aspect-square relative">
+            <div className="aspect-square relative bg-[#e7e7e7]">
               <Image
                 src={selected.src}
                 alt={selected.alt}

@@ -1,56 +1,65 @@
 import Link from "next/link";
-import SectionHeader from "@/components/SectionHeader";
-import { btnPrimary, textLink } from "@/lib/styles";
+import FadeIn from "@/components/FadeIn";
+import Icon, { type IconName } from "@/components/Icon";
+import PageHeader from "@/components/PageHeader";
+import { btnPrimary, card, textLink } from "@/lib/styles";
+
+const details: { icon: IconName; label: string; value: React.ReactNode }[] = [
+  {
+    icon: "mail",
+    label: "Email",
+    value: (
+      <a
+        href="mailto:michael@precisionprintwork.com"
+        className="text-fg font-medium hover:text-accent transition-colors [overflow-wrap:anywhere]"
+      >
+        michael@precisionprintwork.com
+      </a>
+    ),
+  },
+  { icon: "clock", label: "Response Time", value: <span className="text-fg-secondary">Typically within 1 business day.</span> },
+  { icon: "pin", label: "Location", value: <span className="text-fg-secondary">Ships from United States.</span> },
+];
 
 export default function Contact() {
   return (
     <div className="bg-surface min-h-screen">
-      <div className="max-w-2xl mx-auto px-4 py-20">
-        <SectionHeader
-          as="h1"
-          eyebrow="Get in Touch"
-          title="Contact"
-          lead={
-            <>
-              For quotes, use the{" "}
-              <Link href="/order" className={textLink}>
-                quote request form
-              </Link>
-              . For everything else, email works best.
-            </>
-          }
-          className="mb-12"
-        />
+      <PageHeader eyebrow="Get in Touch" title="Contact">
+        For quotes, use the{" "}
+        <Link href="/order" className={textLink}>
+          quote request form
+        </Link>
+        . For everything else, email works best.
+      </PageHeader>
 
-        <dl className="circuit-bg bg-surface-raised border border-line rounded-2xl p-8 space-y-6">
-          <div>
-            <dt className="eyebrow mb-1">Email</dt>
-            <dd>
-              <a
-                href="mailto:michael@precisionprintwork.com"
-                className="text-fg font-medium hover:text-accent transition-colors"
-              >
-                michael@precisionprintwork.com
-              </a>
-            </dd>
-          </div>
-
-          <div className="border-t border-line pt-6">
-            <dt className="eyebrow mb-1">Response Time</dt>
-            <dd className="text-fg-secondary">Typically within 1 business day.</dd>
-          </div>
-
-          <div className="border-t border-line pt-6">
-            <dt className="eyebrow mb-1">Location</dt>
-            <dd className="text-fg-secondary">Ships from United States.</dd>
-          </div>
+      <div className="max-w-5xl mx-auto px-4 py-20">
+        <dl className="grid md:grid-cols-3 gap-5 mb-12">
+          {details.map((d, i) => (
+            <FadeIn key={d.label} delay={i * 80}>
+              <div className={`${card} h-full p-6`}>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-surface-overlay text-accent">
+                  <Icon name={d.icon} size={20} />
+                </div>
+                <dt className="eyebrow mb-1.5">{d.label}</dt>
+                <dd>{d.value}</dd>
+              </div>
+            </FadeIn>
+          ))}
         </dl>
 
-        <div className="mt-10 text-center">
-          <Link href="/order" className={btnPrimary}>
-            Get a Free Quote
-          </Link>
-        </div>
+        <FadeIn>
+          <div className={`${card} relative overflow-hidden rounded-3xl px-6 py-10 md:px-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left`}>
+            <div className="absolute inset-0 hero-glow pointer-events-none" aria-hidden="true" />
+            <div className="relative">
+              <h2 className="text-2xl font-bold text-fg mb-2">Have a part in mind?</h2>
+              <p className="text-fg-muted">The quote form gets you the fastest answer — and it&apos;s free.</p>
+            </div>
+            <Link href="/order" className={`${btnPrimary} group relative shrink-0`}>
+              Get a Free Quote
+              <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+        </FadeIn>
       </div>
     </div>
   );

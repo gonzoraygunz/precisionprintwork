@@ -1,24 +1,17 @@
 import Link from "next/link";
 import PortfolioGrid from "@/components/PortfolioGrid";
 import FadeIn from "@/components/FadeIn";
-import SectionHeader from "@/components/SectionHeader";
+import PageHeader from "@/components/PageHeader";
 import { btnPrimary } from "@/lib/styles";
 import { projects } from "@/lib/projects";
 
 export default function Portfolio() {
   return (
     <div className="bg-surface min-h-screen">
+      <PageHeader eyebrow="Past Work" title="Portfolio">
+        A sample of completed projects. Each one started as a problem — this is what came out the other end.
+      </PageHeader>
       <div className="max-w-5xl mx-auto px-4 py-20">
-        <FadeIn>
-          <SectionHeader
-            as="h1"
-            eyebrow="Past Work"
-            title="Portfolio"
-            lead="A sample of completed projects. Each one started as a problem — this is what came out the other end."
-            className="mb-16"
-          />
-        </FadeIn>
-
         <PortfolioGrid projects={projects} />
 
         <FadeIn>

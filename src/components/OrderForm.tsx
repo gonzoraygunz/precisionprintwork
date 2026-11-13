@@ -4,8 +4,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { upload } from "@vercel/blob/client";
 import Icon from "@/components/Icon";
 import { btnPrimary, inputClass, textLink } from "@/lib/styles";
+import {
+  BLOB_PREFIX,
+  DIRECT_UPLOAD_LIMIT_BYTES,
+  MAX_UPLOAD_BYTES,
+  formatBytes,
+  hasAllowedExtension,
+} from "@/lib/upload";
 
 const schema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -33,6 +41,9 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 export default function OrderForm() {
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
+  const [dragging, setDragging] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -49,15 +60,54 @@ export default function OrderForm() {
       ? { "aria-invalid": true as const, "aria-describedby": `${field}-error` }
       : {};
 
+  // Single entry point for picking, dropping and removing a file.
+  function pickFile(f: File | null) {
+    setFileError("");
+    if (!f) return setFile(null);
+    if (!hasAllowedExtension(f.name)) {
+      setFileError("Please attach an STL, OBJ, STEP, image, or PDF file.");
+      return;
+    }
+    if (f.size > MAX_UPLOAD_BYTES) {
+      setFileError(`That file is ${formatBytes(f.size)}. The limit is 25 MB — email larger files instead.`);
+      return;
+    }
+    setFile(f);
+  }
+
   async function onSubmit(data: FormData) {
     setStatus("submitting");
     setErrorMsg("");
 
     const body = new FormData();
     Object.entries(data).forEach(([k, v]) => body.append(k, v ?? ""));
-    if (file) body.append("file", file);
 
     try {
+      if (file && file.size > DIRECT_UPLOAD_LIMIT_BYTES) {
+        // Too big for a function request body: send it to private Blob storage first.
+        setUploadPct(0);
+        let blob;
+        try {
+          blob = await upload(BLOB_PREFIX + file.name, file, {
+            access: "private",
+            handleUploadUrl: "/api/upload",
+            multipart: true,
+            onUploadProgress: ({ percentage }) => setUploadPct(Math.round(percentage)),
+          });
+        } catch (e) {
+          console.error("Blob upload failed:", e);
+          throw new Error(
+            "Your file couldn't be uploaded. Try again, attach a smaller file (under 4 MB), or email it to michael@precisionprintwork.com."
+          );
+        } finally {
+          setUploadPct(null);
+        }
+        body.append("fileUrl", blob.url);
+        body.append("fileName", file.name);
+      } else if (file) {
+        body.append("file", file);
+      }
+
       const res = await fetch("/api/order", { method: "POST", body });
       if (!res.ok) throw new Error(await res.text());
       setStatus("success");
@@ -71,7 +121,7 @@ export default function OrderForm() {
 
   if (status === "success") {
     return (
-      <div className="circuit-bg bg-surface-raised border border-accent-line rounded-2xl p-10 text-center" role="status">
+      <div className="py-8 text-center" role="status">
         <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-surface-overlay text-accent flex items-center justify-center">
           <Icon name="check" strokeWidth={2} />
         </div>
@@ -87,7 +137,7 @@ export default function OrderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* Contact */}
       <fieldset className="space-y-4">
         <legend className={`${legendClass} mb-4`}>Your Info</legend>
@@ -121,7 +171,7 @@ export default function OrderForm() {
             {...register("description")}
             {...a11y("description")}
             rows={5}
-            className={inputClass + " resize-none"}
+            className={inputClass + " resize-y min-h-32"}
             placeholder="What does the part do? What are the approximate dimensions? Does it need to fit with any existing components? Is there a material preference?"
           />
           <FieldError id="description-error" message={errors.description?.message} />
@@ -141,6 +191,7 @@ export default function OrderForm() {
               <option value="PETG">PETG (tough, moisture resistant)</option>
               <option value="TPU">TPU (flexible)</option>
               <option value="ASA">ASA (UV/heat resistant)</option>
+              <option value="Resin">Resin (fine detail, minis)</option>
             </select>
           </div>
         </div>
@@ -154,23 +205,46 @@ export default function OrderForm() {
           </select>
         </div>
 
-        {/* File upload */}
+        {/* File upload: click, keyboard (focusable sr-only input), or drag and drop */}
         <div>
           <p className={labelClass}>Attach a file (optional)</p>
-          <div className="relative border border-dashed border-line-control bg-surface-raised rounded-xl px-4 py-6 hover:border-accent focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-colors">
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              const dropped = e.dataTransfer.files?.[0];
+              if (dropped) pickFile(dropped);
+            }}
+            className={`relative border border-dashed rounded-xl px-4 py-6 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent transition-colors ${
+              dragging ? "border-accent bg-accent/10" : "border-line-control bg-surface hover:border-accent"
+            }`}
+          >
             <input
               type="file"
               id="file"
               accept=".stl,.obj,.step,.stp,.png,.jpg,.jpeg,.pdf"
               className="sr-only"
-              aria-describedby="file-hint"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              aria-describedby={fileError ? "file-error" : "file-hint"}
+              onChange={(e) => {
+                pickFile(e.target.files?.[0] ?? null);
+                e.target.value = ""; // allow re-picking the same file after "Remove file"
+              }}
             />
             <label htmlFor="file" className="cursor-pointer flex items-center justify-center gap-3 text-sm text-fg-secondary">
               {file ? (
                 <>
                   <Icon name="paperclip" size={20} className="text-accent shrink-0" />
-                  <span className="text-accent font-medium break-all">{file.name}</span>
+                  <span>
+                    <span className="text-accent font-medium break-all">{file.name}</span>
+                    <span id="file-hint" className="block font-mono text-xs text-fg-muted mt-1">
+                      {formatBytes(file.size)} · click to choose a different file
+                    </span>
+                  </span>
                 </>
               ) : (
                 <>
@@ -185,6 +259,21 @@ export default function OrderForm() {
               )}
             </label>
           </div>
+          {file && (
+            <button
+              type="button"
+              onClick={() => pickFile(null)}
+              className="mt-2 inline-flex items-center gap-1 text-xs text-fg-muted hover:text-fg transition-colors"
+            >
+              <Icon name="close" size={14} strokeWidth={2} />
+              Remove file
+            </button>
+          )}
+          {fileError && (
+            <p id="file-error" role="alert" className="text-danger text-xs mt-1.5">
+              {fileError}
+            </p>
+          )}
         </div>
       </fieldset>
 
@@ -194,8 +283,15 @@ export default function OrderForm() {
         </p>
       )}
 
-      <button type="submit" disabled={status === "submitting"} className={`${btnPrimary} w-full`}>
-        {status === "submitting" ? "Sending…" : "Submit Request"}
+      <button type="submit" disabled={status === "submitting"} className={`${btnPrimary} group w-full`}>
+        {status === "submitting" ? (
+          uploadPct !== null ? `Uploading file… ${uploadPct}%` : "Sending…"
+        ) : (
+          <>
+            Submit Request
+            <Icon name="arrowRight" size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
+          </>
+        )}
       </button>
 
       <p className="text-center text-xs text-fg-muted">

@@ -26,7 +26,7 @@ export default function Nav() {
     <header className="border-b border-line bg-surface/90 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-18 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
-          <Image src="/logo-mark.png" alt="" width={230} height={256} className="h-12 w-auto" priority />
+          <Image src="/logo-mark.png" alt="" width={230} height={256} className="h-12 w-auto" loading="eager" fetchPriority="high" />
           <span className="flex flex-col leading-none">
             <span className="text-lg font-bold tracking-wide text-fg">PRECISION</span>
             <span className="font-mono text-[0.6875rem] font-medium tracking-[0.2em] text-accent mt-1">PRINTWORKS</span>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import PageHeader from "@/components/PageHeader";
 import Icon, { type IconName } from "@/components/Icon";
 import SectionHeader from "@/components/SectionHeader";
 import { btnPrimary, card } from "@/lib/styles";
@@ -26,22 +27,10 @@ const materials = [
 export default function Services() {
   return (
     <div className="bg-surface min-h-screen">
+      <PageHeader eyebrow="What I Offer" title="Services">
+        Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can print it. FDM and resin available.
+      </PageHeader>
       <div className="max-w-5xl mx-auto px-4 py-20">
-        <FadeIn>
-          <SectionHeader
-            as="h1"
-            eyebrow="What I Offer"
-            title="Services"
-            lead={
-              <>
-                Parts, minis, gifts, terrain, prototypes — if you can describe it, there&apos;s a good chance I can
-                print it. FDM and resin available.
-              </>
-            }
-            className="mb-16"
-          />
-        </FadeIn>
-
         <div className="grid md:grid-cols-2 gap-6 mb-20">
           {services.map((s, i) => (
             <FadeIn key={s.title} delay={i * 60}>
