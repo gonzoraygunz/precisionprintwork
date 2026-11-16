@@ -133,14 +133,6 @@ export const projects: Project[] = [
     photo: true,
   },
   {
-    src: "/portfolio/booknook-shelf.jpg",
-    alt: "Book nook tucked between books on a home bookshelf",
-    title: "Wizarding Staircase Book Nook",
-    description: "Installed on the shelf between the books.",
-    tag: "Installed · Bookshelf",
-    photo: true,
-  },
-  {
     src: "/portfolio/resin-batch-crowd.jpg",
     alt: "Dozens of grey resin miniatures arranged on a wooden log slab",
     title: "Resin Miniature Batch",
@@ -189,14 +181,6 @@ export const projects: Project[] = [
     photo: true,
   },
   {
-    src: "/portfolio/painted-treehouse.jpg",
-    alt: "Painted hollow-tree house terrain with a round golden door and mossy roots",
-    title: "Painted Scatter Terrain",
-    description: "Tree house with a round door, painted by hand.",
-    tag: "Tree house · Front",
-    photo: true,
-  },
-  {
     src: "/portfolio/painted-treehouse-side.jpg",
     alt: "Side view of the painted tree house showing bark detail and a tiny window",
     title: "Painted Scatter Terrain",
@@ -210,14 +194,6 @@ export const projects: Project[] = [
     title: "Painted Scatter Terrain",
     description: "Fingertip-sized desk set with candles and a tome.",
     tag: "Prop · Desk",
-    photo: true,
-  },
-  {
-    src: "/portfolio/chicken-panel-design.jpg",
-    alt: "Slicer view of a panel with diamond lattice and chicken line art",
-    title: "Chicken Line-Art Panel",
-    description: "The design in the slicer, before printing.",
-    tag: "Design · Slicer",
     photo: true,
   },
   {
@@ -346,7 +322,7 @@ export const caseStudies: CaseStudy[] = [
       ["Fits", "Futurola Dutch Folder"],
       ["Type", "Functional part"],
     ],
-    variants: [projects[30], projects[31]],
+    variants: [projects[27], projects[28]],
     cta: "Get parts for your machine",
   },
   {
@@ -360,7 +336,7 @@ export const caseStudies: CaseStudy[] = [
       ["Lighting", "Built-in"],
       ["Fits", "Standard bookshelf"],
     ],
-    variants: [projects[15], projects[16], projects[17]],
+    variants: [projects[15], projects[16]],
     cta: "Get a book nook made",
   },
   {
@@ -374,7 +350,7 @@ export const caseStudies: CaseStudy[] = [
       ["Colors", "2 · Color change"],
       ["Started from", "Line art"],
     ],
-    variants: [projects[27], projects[28]],
+    variants: [projects[25]],
     cta: "Send us your art",
   },
   {
@@ -415,7 +391,7 @@ export const caseStudies: CaseStudy[] = [
       ["Colors", "Multi-color"],
       ["Set", "5 designs"],
     ],
-    variants: [projects[29]],
+    variants: [projects[26]],
     cta: "Order a set",
   },
   {
@@ -443,7 +419,7 @@ export const caseStudies: CaseStudy[] = [
       ["Type", "Minis + Terrain"],
       ["Scale", "Batch order"],
     ],
-    variants: [projects[18], projects[19], projects[20]],
+    variants: [projects[17], projects[18], projects[19]],
     cta: "Print your party",
   },
   {
@@ -457,7 +433,7 @@ export const caseStudies: CaseStudy[] = [
       ["Finish", "Hand-painted"],
       ["Models", "2"],
     ],
-    variants: [projects[21], projects[22], projects[23]],
+    variants: [projects[21], projects[20], projects[22]],
     cta: "Ask about painting",
   },
   {
@@ -471,7 +447,7 @@ export const caseStudies: CaseStudy[] = [
       ["Type", "Scatter terrain"],
       ["Pieces", "2"],
     ],
-    variants: [projects[24], projects[25], projects[26]],
+    variants: [projects[23], projects[24]],
   },
   {
     id: "dnd-terrain",
