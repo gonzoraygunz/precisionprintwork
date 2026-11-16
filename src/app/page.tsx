@@ -31,7 +31,7 @@ const specs = [
 ];
 
 // One of each kind of work for the home teaser.
-const recentWork = [projects[4], projects[9], projects[11]];
+const recentWork = [projects[15], projects[21], projects[4]];
 
 export default function Home() {
   return (
@@ -128,7 +128,7 @@ export default function Home() {
                       alt={p.alt}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-contain p-5 motion-safe:group-hover:scale-105 transition-transform duration-500"
+                      className={`${p.photo ? "object-cover" : "object-contain p-5"} motion-safe:group-hover:scale-105 transition-transform duration-500`}
                     />
                   </div>
                   <div className="px-5 py-4">

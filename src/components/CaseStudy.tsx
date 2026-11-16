@@ -23,6 +23,13 @@ export default function CaseStudy({
   const [active, setActive] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const current = study.variants[active];
+  // Real photos are portrait: give them a taller frame and let them fill it.
+  const tall = study.variants.some((v) => v.photo);
+  const cols = !tall
+    ? "md:grid-cols-[1.1fr_1fr]"
+    : reverse
+      ? "md:grid-cols-[1fr_0.8fr]"
+      : "md:grid-cols-[0.8fr_1fr]";
   const zoomButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -42,17 +49,17 @@ export default function CaseStudy({
     <article
       id={study.id}
       aria-labelledby={`${study.id}-title`}
-      className="grid md:grid-cols-[1.1fr_1fr] gap-8 md:gap-12 items-center scroll-mt-28"
+      className={`grid ${cols} gap-8 md:gap-12 items-center scroll-mt-28`}
     >
       {/* Photo + variants */}
       <div className={`rounded-2xl border border-line bg-surface-raised overflow-hidden ${reverse ? "md:order-2" : ""}`}>
-        <div className="relative aspect-4/3 bg-[#e7e7e7]">
+        <div className={`relative bg-[#e7e7e7] ${tall ? "aspect-4/5" : "aspect-4/3"}`}>
           <Image
             src={current.src}
             alt={current.alt}
             fill
             sizes="(min-width: 768px) 560px, 100vw"
-            className="object-contain p-6 md:p-8"
+            className={current.photo ? "object-cover" : "object-contain p-6 md:p-8"}
           />
           <button
             ref={zoomButton}
@@ -82,7 +89,7 @@ export default function CaseStudy({
                   }`}
                 >
                   <span className="relative w-11 h-11 shrink-0 rounded-lg bg-[#e7e7e7] overflow-hidden">
-                    <Image src={v.src} alt="" fill sizes="44px" className="object-contain p-0.5" />
+                    <Image src={v.src} alt="" fill sizes="44px" className={v.photo ? "object-cover" : "object-contain p-0.5"} />
                   </span>
                   <span className="min-w-0">
                     <span className="block font-mono text-[0.6875rem] tracking-widest text-brass">{material}</span>
@@ -139,11 +146,17 @@ export default function CaseStudy({
             role="dialog"
             aria-modal="true"
             aria-label={current.alt}
-            className="relative max-w-2xl w-full gradient-border rounded-2xl overflow-hidden shadow-2xl"
+            className={`relative w-full gradient-border ${current.photo ? "max-w-lg" : "max-w-2xl"} rounded-2xl overflow-hidden shadow-2xl`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="aspect-square relative bg-[#e7e7e7]">
-              <Image src={current.src} alt={current.alt} fill sizes="672px" className="object-contain p-6" />
+            <div className={`relative bg-[#e7e7e7] ${current.photo ? "aspect-3/4 max-h-[75vh]" : "aspect-square"}`}>
+              <Image
+                src={current.src}
+                alt={current.alt}
+                fill
+                sizes="672px"
+                className={current.photo ? "object-contain bg-black" : "object-contain p-6"}
+              />
             </div>
             <div className="p-5 border-t border-line flex items-baseline justify-between gap-4">
               <p className="font-semibold text-fg">{study.title}</p>
