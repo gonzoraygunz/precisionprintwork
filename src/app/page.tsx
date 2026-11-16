@@ -31,7 +31,7 @@ const specs = [
 ];
 
 // One of each kind of work for the home teaser.
-const recentWork = [projects[3], projects[0], projects[1]];
+const recentWork = [projects[4], projects[9], projects[11]];
 
 export default function Home() {
   return (
